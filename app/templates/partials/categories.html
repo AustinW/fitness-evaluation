@@ -1,0 +1,11 @@
+<div class="col-md-3">
+	{% if worksheet.get_categories() %}
+	<ul class="nav nav-pills nav-stacked">
+		{% for category in worksheet.get_categories() %}
+		<li><a href="/categories/{{ category | slug }}">{{ category }}</a></li>
+		{% endfor %}
+	</ul>
+	{% else %}
+	<a href="/authorize" class="btn btn-success btn-lg">Get Started</a>
+	{% endif %}
+</div>
