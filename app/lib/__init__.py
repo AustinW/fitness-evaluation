@@ -12,8 +12,10 @@ def slug(text, delim=u'-'):
 	return unicode(delim.join(result))
 
 def is_number(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
+	try:
+		float(s)
+		return True
+	except ValueError:
+		return False
+	except TypeError:
+		return False

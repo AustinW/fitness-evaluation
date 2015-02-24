@@ -1,1 +1,14 @@
-404 not found
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="jumbotron">
+				<h1>404 Not Found</h1>
+				<p>{{ message }}</p>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -1,6 +1,7 @@
 # Flask
 from flask import Flask, session, render_template
 from flask import redirect, request
+from flask.ext.sqlalchemy import SQLAlchemy
 
 # Google API
 from gspread import GSpreadException
@@ -10,33 +11,66 @@ from oauth2client.file import Storage
 # Python standard library
 import httplib2
 
+from app.lib.fitness.fitness_sheet import FitnessSheet
+from app.lib.fitness.ranking import Ranking
 from app.lib.fitness import FitnessWorksheet
-from app.lib.plot import Plot
 from app.lib import slug
 
 app = Flask(__name__)
-
 app.config.from_object('config')
+db = SQLAlchemy(app)
+
+from models import *
 
 storage = Storage(app.config['GOOGLE_OAUTH_AUTHORIZED_CREDENTIALS'])
 
 @app.route('/')
 def index():
 	if not storage.get():
+		session['redirect_url'] = request.url
 		return redirect('/authorize')
 
 	try:
-		worksheet = FitnessWorksheet(app.config)
+		mainSheet = FitnessSheet(storage, app.config['GOOGLE_SHEETS_ID'])
+		worksheets = mainSheet.get_worksheets()
 
-		return render_template('index.html', worksheet=worksheet)
+		return render_template('index.html', worksheets=worksheets)
 	
 	except GSpreadException as e:
 		# Refresh token
+		session['redirect_url'] = request.url
 		return redirect('/authorize')
 
 	except HTTPError as e:
 		# Refresh token
+		session['redirect_url'] = request.url
 		return redirect('/authorize')
+
+@app.route('/worksheet/<worksheet_id>')
+def show_worksheet(worksheet_id):
+	try:
+		mainSheet = FitnessSheet(storage, app.config['GOOGLE_SHEETS_ID'])
+
+		fitnessWorksheet = mainSheet.get_worksheet_by_id(worksheet_id)
+
+		if not fitnessWorksheet:
+			return render_template('404.html', message='Could not find the specified worksheet')
+
+		ranking = Ranking(fitnessWorksheet)
+
+		print ranking.overall_ranking()
+
+		return render_template('worksheet.html', worksheets=mainSheet.get_worksheets(), worksheet=fitnessWorksheet)
+	except GSpreadException as e:
+		# Refresh token
+		session['redirect_url'] = request.url
+		return redirect('/authorize')
+
+	except HTTPError as e:
+		# Refresh token
+		session['redirect_url'] = request.url
+		return redirect('/authorize')
+
 
 @app.route('/categories/<category>')
 def show_category(category):
@@ -52,6 +86,30 @@ def show_category(category):
 
 		return render_template('category.html', worksheet=worksheet, athlete_stats=athlete_stats, category=category_name)
 	except HTTPError as e:
+		session['redirect_url'] = request.url
+		return redirect('/authorize')
+
+@app.route('/worksheet/<worksheet_id>/<category>')
+def show_worksheet_category(worksheet_id, category):
+
+	try:
+		mainSheet = FitnessSheet(storage, app.config['GOOGLE_SHEETS_ID'])
+
+		fitnessWorksheet = mainSheet.get_worksheet_by_id(worksheet_id)
+
+		if not fitnessWorksheet:
+			return render_template('404.html', message='Could not find the specified worksheet')
+
+		return render_template('worksheet.html', worksheet=fitnessWorksheet)
+
+	except GSpreadException as e:
+		# Refresh token
+		session['redirect_url'] = request.url
+		return redirect('/authorize')
+
+	except HTTPError as e:
+		# Refresh token
+		session['redirect_url'] = request.url
 		return redirect('/authorize')
 
 
@@ -72,7 +130,12 @@ def auth_return():
 	storage = Storage(app.config['GOOGLE_OAUTH_AUTHORIZED_CREDENTIALS'])
 	storage.put(credentials)
 
-	return redirect('/')
+	if 'redirect_url' in session:
+		redirect_url = session['redirect_url']
+		session.pop('redirect_url')
+		return redirect(redirect_url)
+	else:
+		return redirect('/')
 
 @app.errorhandler(404)
 def not_found(error):

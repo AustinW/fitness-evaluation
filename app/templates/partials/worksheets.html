@@ -1,0 +1,11 @@
+<div class="col-md-2">
+	{% if worksheets %}
+	<ul class="nav nav-pills nav-stacked">
+		{% for worksheet in worksheets %}
+		<li><a href="/worksheet/{{ worksheet.id }}">{{ worksheet.title }}</a></li>
+		{% endfor %}
+	</ul>
+	{% else %}
+	<a href="/authorize" class="btn btn-success btn-lg">Get Started</a>
+	{% endif %}
+</div>

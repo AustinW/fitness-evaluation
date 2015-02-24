@@ -1,8 +1,22 @@
-<div class="col-md-3">
-	{% if worksheet.get_categories() %}
+<div class="col-md-2">
+	<div class="dropdown">
+		<button class="btn btn-default dropdown-toggle" type="button" id="worksheetList" data-toggle="dropdown" aria-expanded="true">
+			{{ worksheet.get_title() }}
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" role="menu" aria-labelledby="worksheetList">
+			{% for worksheet_item in worksheets %}
+			<li role="presentation"><a role="menuitem" tabindex="-1" href="/worksheet/{{ worksheet_item.id }}">{{ worksheet_item.title }}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+	
+	<h3>Categories</h3>
+	<hr>
+	{% if worksheet and worksheet.get_categories() %}
 	<ul class="nav nav-pills nav-stacked">
 		{% for category in worksheet.get_categories() %}
-		<li><a href="/categories/{{ category | slug }}">{{ category }}</a></li>
+		<li><a href="/worksheet/{{ worksheet.get_id() }}/{{ category | slug }}">{{ category }}</a></li>
 		{% endfor %}
 	</ul>
 	{% else %}
