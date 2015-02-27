@@ -1,7 +1,9 @@
 # Flask
-from flask import Flask, session, render_template
-from flask import redirect, request
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask import Flask, session, render_template, redirect, request, jsonify, Response
+
+import json, time
+
+import traceback
 
 # Google API
 from gspread import GSpreadException
@@ -11,16 +13,12 @@ from oauth2client.file import Storage
 # Python standard library
 import httplib2
 
-from app.lib.fitness.fitness_sheet import FitnessSheet
-from app.lib.fitness.ranking import Ranking
-from app.lib.fitness import FitnessWorksheet
-from app.lib import slug
+from app import app
+from models import Athlete, Group
 
-app = Flask(__name__)
-app.config.from_object('config')
-db = SQLAlchemy(app)
-
-from models import *
+from fitness.fitness_sheet import FitnessSheet
+from fitness.ranking import Ranking
+from helpers import slug
 
 storage = Storage(app.config['GOOGLE_OAUTH_AUTHORIZED_CREDENTIALS'])
 
@@ -56,11 +54,12 @@ def show_worksheet(worksheet_id):
 		if not fitnessWorksheet:
 			return render_template('404.html', message='Could not find the specified worksheet')
 
-		ranking = Ranking(fitnessWorksheet)
+		return render_template('worksheet.html',
+			worksheets=mainSheet.get_worksheets(),
+			worksheet=fitnessWorksheet,
+			categories=fitnessWorksheet.get_categories()
+		)
 
-		print ranking.overall_ranking()
-
-		return render_template('worksheet.html', worksheets=mainSheet.get_worksheets(), worksheet=fitnessWorksheet)
 	except GSpreadException as e:
 		# Refresh token
 		session['redirect_url'] = request.url
@@ -101,6 +100,60 @@ def show_worksheet_category(worksheet_id, category):
 			return render_template('404.html', message='Could not find the specified worksheet')
 
 		return render_template('worksheet.html', worksheet=fitnessWorksheet)
+
+	except GSpreadException as e:
+		# Refresh token
+		session['redirect_url'] = request.url
+		return redirect('/authorize')
+
+	except HTTPError as e:
+		# Refresh token
+		session['redirect_url'] = request.url
+		return redirect('/authorize')
+
+
+@app.route('/worksheet/<worksheet_id>.json')
+def json_category_stats(worksheet_id):
+	try:
+		mainSheet = FitnessSheet(storage, app.config['GOOGLE_SHEETS_ID'])
+
+		fitnessWorksheet = mainSheet.get_worksheet_by_id(worksheet_id)
+
+		if not fitnessWorksheet:
+			return render_template('404.html', message='Could not find the specified worksheet')
+
+		if 'category' in request.args:
+			category = request.args['category']
+			category_stats = fitnessWorksheet.get_category_stats(category)
+			stats = [{'athlete': category_stat[0].as_dict(), 'score': category_stat[1]} for category_stat in category_stats]
+
+		if 'group' in request.args:
+			try:
+				group = Group().query.filter_by(id=int(request.args['group'])).first()
+
+				athletes = group.athletes
+
+				ranking = Ranking(fitnessWorksheet)
+
+				start = time.clock()
+
+				partial_ranking = [{'athlete': athlete.as_dict(), 'score': score} for athlete, score in ranking.partial_ranking(athletes)]
+
+				end = time.clock()
+
+				print 'Elapsed time: ' + str((end - start)) + ' seconds'
+
+				return Response(json.dumps(partial_ranking), mimetype='application/json')
+
+			except Exception as e:
+				print traceback.format_exc()
+				return jsonify({'message': 'Could not identify group', 'error': e.message})
+
+
+
+		return Response(json.dumps(stats), mimetype='application/json')
+
+		# return jsonify(stats)
 
 	except GSpreadException as e:
 		# Refresh token

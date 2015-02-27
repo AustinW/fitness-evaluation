@@ -1,12 +1,10 @@
-import app
-
 # Google API
 import gspread
 import pygal
 
 from operator import itemgetter
 
-from app.lib.fitness import FitnessWorksheet
+from fitness_worksheet import FitnessWorksheet
 
 class FitnessSheet:
 

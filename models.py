@@ -1,3 +1,5 @@
+from flask.ext.sqlalchemy import SQLAlchemy
+
 from app import db
 
 athlete_groups = db.Table('athlete_groups',
@@ -14,11 +16,24 @@ class Athlete(db.Model):
 	birthday = db.Column(db.DateTime, index=True)
 	gender = db.Column(db.String(1))
 
-	def __init__(self, name):
+	group = db.relationship("Group", secondary=athlete_groups)
+
+	def __init__(self, name=None):
 		self.name = name
 
 	def __repr__(self):
 		return '<Athlete %r>' % (self.name)
+
+	def __unicode__(self):
+		return self.name
+
+	def as_dict(self):
+		return {
+			'usag_id':  self.usag_id,
+			'name':     self.name,
+			'birthday': self.birthday.strftime('%m/%d/%Y'),
+			'gender':   self.gender
+		}
 
 class Group(db.Model):
 
@@ -26,6 +41,8 @@ class Group(db.Model):
 
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(64))
+
+	athletes = db.relationship("Athlete", secondary=athlete_groups)
 
 	def __repr__(self):
 		return '<Group %r>' % (self.name)

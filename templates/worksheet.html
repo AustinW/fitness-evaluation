@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="container-fluid">
+	<div class="row">
+
+		{% include 'partials/categories.html' %}
+		
+		<div class="col-md-3">
+			<h1>Top Athletes</h1>
+
+			<div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="category-selector">
+				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+					<span class="selected-label"></span>
+					<span class="caret"></span>
+					<span class="sr-only">Toggle Dropdown</span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#">Overall</a></li>
+					<li class="divider"></li>
+					{% for category in categories %}
+					<li data-worksheet="{{ worksheet.get_id() }}" data-category="{{ category | slug }}">
+						<a href="#">{{ category }}</a>
+					</li>
+					{% endfor %}
+				</ul>
+				<input class="hidden hidden-field" name="category-selector" readonly="readonly" aria-hidden="true" type="text"/>
+			</div>
+
+			
+			<hr />
+			<table class="table table-hover table-striped" id="rankings-table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Name</th>
+						<th>Score</th>
+					</tr>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+		</div>
+		<div class="col-md-7">
+			<div class="well"></div>
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -1,7 +1,5 @@
-import app
-
-from app.lib import slug
-from app.lib.fitness.category_ranking import CategoryRanking
+from helpers import slug, clean_name
+from category_ranking import CategoryRanking
 
 from operator import itemgetter
 
@@ -30,7 +28,7 @@ class Ranking:
 		for athlete in athletes:
 
 			# Athlete's stats
-			stats = self.get_stats_for_athlete(athlete, results)
+			stats = self.get_stats_for_athlete(athlete.name, results)
 
 			# Athlete's running total
 			total_points = 0
@@ -47,12 +45,12 @@ class Ranking:
 				# Get athlete's points based on their result
 				category_points = category_ranking.points(stats)
 
-				print athlete + " (" + category + "): " + str(category_points)
+				# print athlete.name + " (" + category + "): " + str(category_points)
 
 				# Add the category points to their total points
 				total_points += category_points
 
-			# Assign the athlete's points to their name
+			# Assign the athlete's points to their Athlete object
 			overall_ranking.append((athlete, total_points))
 
 		# Sort the rankings
@@ -60,10 +58,29 @@ class Ranking:
 
 		return overall_ranking
 
+	def partial_ranking(self, athletes):
+
+		overall_ranking = self.overall_ranking()
+
+		partial_ranking = []
+
+		for athlete in athletes:
+
+			for rankedAthlete, score in overall_ranking:
+
+				if clean_name(athlete.name) == clean_name(rankedAthlete.name):
+
+					partial_ranking.append((rankedAthlete, score))
+					
+
+		return partial_ranking
+
 	def get_stats_for_athlete(self, name, results):
 
+		cleaned_name = clean_name(name)
+
 		for result in results:
-			if result['Name'] == name:
+			if clean_name(result['Name']) == cleaned_name:
 				return result
 
 		return None

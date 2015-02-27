@@ -1,9 +1,6 @@
-import app
-
-from app.lib import slug
+from helpers import slug
 
 from operator import itemgetter
-import time
 
 class CategoryMapper:
 

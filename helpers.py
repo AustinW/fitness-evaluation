@@ -19,3 +19,9 @@ def is_number(s):
 		return False
 	except TypeError:
 		return False
+
+def clean_name(name):
+	if not name or name == "":
+		return name
+
+	return name.replace("  ", " ").strip()

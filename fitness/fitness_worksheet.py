@@ -1,13 +1,9 @@
-import app
-
-from app.lib import slug
-from app.lib import is_number
+from helpers import slug, is_number, clean_name
+from models import Athlete
 
 # Google API
 import gspread
 import pygal
-
-import sys
 
 from oauth2client.file import Storage
 
@@ -22,6 +18,10 @@ class FitnessWorksheet:
 	categories = None
 
 	config = None
+
+	athletes = []
+
+	db_athletes = None
 
 	NAME = 0
 	RESULT = 1
@@ -55,30 +55,43 @@ class FitnessWorksheet:
 
 		return None
 
+	# TODO: The reason the app is going slow! Too many db queries
 	def get_athletes(self, sort=True):
-		athletes = [item['Name'] for item in self.all_results]
+
+		if len(self.athletes) is not 0:
+			return self.athletes
+
+		if self.db_athletes is None:
+			self.db_athletes = Athlete().query.all()
+
+		# Look in all results
+		for item in self.all_results:
+
+			# Loop through all the athletes and match up the results
+			for athlete in self.db_athletes:
+
+				# Need to make sure the athlete is found
+				found = False
+
+				# Check if name matches
+				if clean_name(item['Name']) == athlete.name:
+
+					# Add the athlete
+					self.athletes.append(athlete)
+
+					# Set the found flag
+					found = True
+
+					# Stop the loop
+					break
+
+			if not found:
+				raise Exception("Could not match athlete " + item['Name'] + " from Google to local database")
 
 		if sort:
-			athletes.sort()
+			self.athletes.sort()
 
-		return athletes
-
-	# Won't work anymore
-	# def get_category_index_from_name(self, the_category):
-	# 	all_categories = self.get_categories()
-
-	# 	index = 3
-	# 	category_index = None
-
-	# 	for cat in all_categories:
-	# 		cat_slug = slug(cat)
-
-	# 		if the_category == cat_slug:
-	# 			category_index = index
-
-	# 		index += 1
-
-	# 	return category_index
+		return self.athletes
 
 	def get_category_stats(self, category):
 		# category_index = self.get_category_index_from_name(category)

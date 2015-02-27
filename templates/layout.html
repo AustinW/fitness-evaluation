@@ -54,7 +54,7 @@
 						<ul class="dropdown-menu" role="menu">
 							{% if worksheet and worksheet.get_athletes() %}
 								{% for athlete in worksheet.get_athletes() %}
-								<li><a href="/athletes/{{ athlete | slug }}">{{ athlete }}</a></li>
+								<li><a href="/athletes/{{ athlete.name | slug }}">{{ athlete.name }}</a></li>
 								{% endfor %}
 							{% else %}
 								<li><a href="/authorize">(None)</a></li>

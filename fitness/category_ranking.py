@@ -1,14 +1,13 @@
-import app
-
-import time
-
-from app.lib.fitness.category_mapper import CategoryMapper
+from category_mapper import CategoryMapper
+from helpers import clean_name
 
 class CategoryRanking:
 
 	category = None
 
 	category_stats = None
+
+	ATHLETE_OBJECT = 0
 
 	def __init__(self, category, category_stats):
 		self.category = category
@@ -27,7 +26,7 @@ class CategoryRanking:
 			for stat in self.category_stats:
 
 				# Find the athlete and break
-				if stat[0] == athlete_stat['Name']:
+				if stat[self.ATHLETE_OBJECT].name == clean_name(athlete_stat['Name']):
 
 					return 1 if stat[1] == 'Yes' else 0
 
@@ -43,7 +42,7 @@ class CategoryRanking:
 			for stat in sorted_stats:
 
 				# Find the athlete and break
-				if stat[0] == athlete_stat['Name']:
+				if stat[self.ATHLETE_OBJECT].name == clean_name(athlete_stat['Name']):
 					break
 				
 				if stat[1] != -1.0:
