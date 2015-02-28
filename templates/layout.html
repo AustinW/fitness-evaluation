@@ -4,13 +4,16 @@
 	<title>World Elite Fitness Evaluation</title>
 
 	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
 	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
 
 	<!-- Fuel UX -->
-	<link rel="stylesheet" href="https://www.fuelcdn.com/fuelux/3.5.0/css/fuelux.min.css">
+	<link rel="stylesheet" href="//www.fuelcdn.com/fuelux/3.5.0/css/fuelux.min.css">
+
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
 
 </head>
@@ -32,7 +35,7 @@
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<!-- Fitness Categories -->
-				<ul class="nav navbar-nav">
+				<!--<ul class="nav navbar-nav">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Categories <span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
@@ -45,10 +48,10 @@
 							{% endif %}
 						</ul>
 					</li>
-				</ul>
+				</ul>-->
 
 				<!-- List of Athletes -->
-				<ul class="nav navbar-nav">
+				<!--<ul class="nav navbar-nav">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Athletes <span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
@@ -61,7 +64,7 @@
 							{% endif %}
 						</ul>
 					</li>
-				</ul>
+				</ul>-->
 				<!-- <form class="navbar-form navbar-left" role="search">
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="Search">
@@ -88,12 +91,8 @@
 	{% block body %}
 	{% endblock %}
 
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
-	<script src="https://www.fuelcdn.com/fuelux/3.5.0/js/fuelux.min.js"></script>
-
-	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	<script data-main="{{ url_for('static', filename='js/main.js') }}" src="//cdn.jsdelivr.net/requirejs/2.1.11/require.js"></script>
+	
+	
 </body>
 </html>

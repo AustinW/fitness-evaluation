@@ -13,6 +13,8 @@ from oauth2client.file import Storage
 # Python standard library
 import httplib2
 
+from graph import Graph
+
 from app import app
 from models import Athlete, Group
 
@@ -113,7 +115,7 @@ def show_worksheet_category(worksheet_id, category):
 
 
 @app.route('/worksheet/<worksheet_id>.json')
-def json_category_stats(worksheet_id):
+def json_stats(worksheet_id):
 	try:
 		mainSheet = FitnessSheet(storage, app.config['GOOGLE_SHEETS_ID'])
 
@@ -126,6 +128,71 @@ def json_category_stats(worksheet_id):
 			category = request.args['category']
 			category_stats = fitnessWorksheet.get_category_stats(category)
 			stats = [{'athlete': category_stat[0].as_dict(), 'score': category_stat[1]} for category_stat in category_stats]
+
+		elif 'group' in request.args:
+			try:
+				group = Group().query.filter_by(id=int(request.args['group'])).first()
+
+				athletes = group.athletes
+
+				ranking = Ranking(fitnessWorksheet)
+
+				start = time.clock()
+
+				partial_ranking = [{'athlete': athlete.as_dict(), 'score': score} for athlete, score in ranking.partial_ranking(athletes)]
+
+				end = time.clock()
+
+				print 'Elapsed time: ' + str((end - start)) + ' seconds'
+
+				return Response(json.dumps(partial_ranking), mimetype='application/json')
+
+			except Exception as e:
+				print traceback.format_exc()
+				return jsonify({'message': 'Could not identify group', 'error': e.message})
+
+		else:
+
+			ranking = Ranking(fitnessWorksheet)
+
+			overall_ranking = ranking.overall_ranking()
+
+			stats = [{'athlete': athlete.as_dict(), 'score': score} for athlete, score in overall_ranking]
+
+		return Response(json.dumps(stats), mimetype='application/json')
+
+		# return jsonify(stats)
+
+	except GSpreadException as e:
+		# Refresh token
+		session['redirect_url'] = request.url
+		return redirect('/authorize')
+
+	except HTTPError as e:
+		# Refresh token
+		session['redirect_url'] = request.url
+		return redirect('/authorize')
+
+@app.route('/worksheet/<worksheet_id>/graph')
+def graph_stats(worksheet_id):
+	try:
+		mainSheet = FitnessSheet(storage, app.config['GOOGLE_SHEETS_ID'])
+
+		fitnessWorksheet = mainSheet.get_worksheet_by_id(worksheet_id)
+
+		if not fitnessWorksheet:
+			return render_template('404.html', message='Could not find the specified worksheet')
+
+		graph = Graph()
+
+		if 'category' in request.args:
+			category = request.args['category']
+			category_name = fitnessWorksheet.slug_to_category_name(category)
+			category_stats = fitnessWorksheet.get_category_stats(category)
+			
+			stats = [{'athlete': category_stat[0].as_dict(), 'score': category_stat[1]} for category_stat in category_stats]
+
+			return graph.get_line_graph(category_name, category_name, stats)
 
 		if 'group' in request.args:
 			try:
@@ -148,6 +215,16 @@ def json_category_stats(worksheet_id):
 			except Exception as e:
 				print traceback.format_exc()
 				return jsonify({'message': 'Could not identify group', 'error': e.message})
+
+		else:
+
+			ranking = Ranking(fitnessWorksheet)
+
+			overall_ranking = ranking.overall_ranking()
+
+			stats = [{'athlete': athlete.as_dict(), 'score': score} for athlete, score in overall_ranking]
+
+			return graph.get_line_graph('Overall Ranking', 'Overall Points', stats)
 
 
 

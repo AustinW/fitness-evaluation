@@ -16,42 +16,62 @@ function slug(str) {
 	return str;
 }
 
-$(function() {
+requirejs.config({
+  paths: {
+    'bootstrap': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min',
+    'fuelux':    '//www.fuelcdn.com/fuelux/3.5.0/js/fuelux.min',
+    'jquery':    '//code.jquery.com/jquery-2.1.3.min',
+    'moment':    '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/locales.min'
+  },
+  // Bootstrap is a "browser globals" script :-(
+  shim: { 'bootstrap': { deps: ['jquery'] } }
+});
+// Require all.js or include individual files as needed
+require(['jquery', 'bootstrap', 'fuelux'], function($) {
+	function changeView(event, data) {
 
-	
+		$('#rankings-table').fadeOut();
+		$('#rankings-table-spinner').fadeIn();
+
+		$('#graph').html('<i class="fa fa-spinner fa-5x fa-spin"></i>');
+
+		var params = {};
+		if (data.category)
+			params.category = data.category
+
+		getResults(data.worksheet, params, $('#rankings-table').find('tbody'));
+
+		$.get('/worksheet/' + data.worksheet + '/graph?' + $.param(params), function(response) {
+			$('#graph').html(response);
+		});
+	}
 
 	// create function to retrieve the information
-	function getResults(params, table) {
-
-		var worksheetId = null;
-
-		if ('worksheetId' in params) {
-			worksheetId = params.worksheetId;
-			delete params.worksheetId;
-		}
+	function getResults(worksheetId, params, table) {
 
 		var paramStr = $.param(params);
 		
 		$.getJSON('/worksheet/' + worksheetId + '.json?' + paramStr, function(response) {
+
+			table.empty();
+			
+			// Populate results table
 			$.each(response, function showResults(index, data) {
 				table.append('<tr><td>' + (index + 1) + '</td><td>' + data['athlete']['name'] + '</td><td>' + data['score'] + '</td></tr>');
 			});
+
+			$('#rankings-table').fadeIn();
+			$('#rankings-table-spinner').fadeOut();
 		});
 	}
 
-	
+	urlSegments = window.location.pathname.split('/');
+	console.log(urlSegments[urlSegments.length - 1]);
 
-	$('#category-selector').on('changed.fu.selectlist', function(event, data) {
+	// Initialize with overall results
+	changeView(null, {
+		worksheet: urlSegments[urlSegments.length - 1]
+	});	
 
-		var params = {
-			worksheetId: data.worksheet,
-			category:    data.category
-		};
-		
-		getResults(params, $('#rankings-table').find('tbody'));
-	});
-
-	$('a.worksheet-category').click(function(e) {
-		
-	});
+	$('#category-selector').on('changed.fu.selectlist', changeView);
 });

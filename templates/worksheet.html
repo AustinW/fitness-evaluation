@@ -4,10 +4,13 @@
 <div class="container-fluid">
 	<div class="row">
 
-		{% include 'partials/categories.html' %}
 		
-		<div class="col-md-3">
-			<h1>Top Athletes</h1>
+		<div class="col-md-3 col-sm-3">
+			<a href="/" class="btn btn-sm btn-default">&laquo; Worksheets</a>
+
+			<h1>{{ worksheet.get_title() }}</h1>
+
+			<h3>Top Athletes</h3>
 
 			<div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="category-selector">
 				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
@@ -16,7 +19,7 @@
 					<span class="sr-only">Toggle Dropdown</span>
 				</button>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="#">Overall</a></li>
+					<li data-worksheet="{{ worksheet.get_id() }}"><a href="#">Overall</a></li>
 					<li class="divider"></li>
 					{% for category in categories %}
 					<li data-worksheet="{{ worksheet.get_id() }}" data-category="{{ category | slug }}">
@@ -29,7 +32,7 @@
 
 			
 			<hr />
-			<table class="table table-hover table-striped" id="rankings-table">
+			<table class="table table-hover table-striped" id="rankings-table" style="display:none">
 				<thead>
 					<tr>
 						<th>#</th>
@@ -41,9 +44,11 @@
 					
 				</tbody>
 			</table>
+
+			<i id="rankings-table-spinner" style="display:none" class="fa fa-spinner fa-5x fa-spin"></i>
 		</div>
-		<div class="col-md-7">
-			<div class="well"></div>
+		<div class="col-md-9 col-sm-9">
+			<div class="well" id="graph"></div>
 		</div>
 	</div>
 </div>
