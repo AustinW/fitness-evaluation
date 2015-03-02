@@ -16,18 +16,7 @@ function slug(str) {
 	return str;
 }
 
-requirejs.config({
-  paths: {
-    'bootstrap': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min',
-    'fuelux':    '//www.fuelcdn.com/fuelux/3.5.0/js/fuelux.min',
-    'jquery':    '//code.jquery.com/jquery-2.1.3.min',
-    'moment':    '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/locales.min'
-  },
-  // Bootstrap is a "browser globals" script :-(
-  shim: { 'bootstrap': { deps: ['jquery'] } }
-});
-// Require all.js or include individual files as needed
-require(['jquery', 'bootstrap', 'fuelux'], function($) {
+$(function() {
 	function changeView(event, data) {
 
 		$('#rankings-table').fadeOut();
