@@ -2,7 +2,7 @@
 This is the entry point of the application that will resolve
 the import dependencies. When running the app, point here
 """
-
+import os
 from app import app, db
 
 from models import *
