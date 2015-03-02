@@ -1,5 +1,6 @@
 .credentials.json
 app.db
 **/*.pyc
+./*.pyc
 
 bower_components

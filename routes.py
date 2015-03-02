@@ -22,29 +22,20 @@ from fitness.fitness_sheet import FitnessSheet
 from fitness.ranking import Ranking
 from helpers import slug
 
+from oauth2client.client import flow_from_clientsecrets
+
 storage = Storage(app.config['GOOGLE_OAUTH_AUTHORIZED_CREDENTIALS'])
 
 @app.route('/')
 def index():
-	if not storage.get():
-		session['redirect_url'] = request.url
-		return redirect('/authorize')
-
 	try:
 		mainSheet = FitnessSheet(storage, app.config['GOOGLE_SHEETS_ID'])
 		worksheets = mainSheet.get_worksheets()
 
 		return render_template('index.html', worksheets=worksheets)
 	
-	except GSpreadException as e:
-		# Refresh token
-		session['redirect_url'] = request.url
-		return redirect('/authorize')
-
-	except HTTPError as e:
-		# Refresh token
-		session['redirect_url'] = request.url
-		return redirect('/authorize')
+	except (GSpreadException, HTTPError) as e:
+		return render_template('index.html')
 
 @app.route('/worksheet/<worksheet_id>')
 def show_worksheet(worksheet_id):
@@ -242,16 +233,40 @@ def graph_stats(worksheet_id):
 		session['redirect_url'] = request.url
 		return redirect('/authorize')
 
+@app.route('/deauthorize')
+def deauthorize():
+
+	try:
+		storage.delete()
+
+		return redirect('/')
+
+	except Exception as e:
+		
+		# Change error
+		return render_template('404.html', message=e.message)
+
 
 @app.route('/authorize')
 def authorize():
-	auth_uri = app.config['FLOW'].step1_get_authorize_url()
+
+	
+	flow = flow_from_clientsecrets(app.config['BASE_DIR'] + '/client_secrets.json',
+	                               scope='https://spreadsheets.google.com/feeds',
+	                               redirect_uri=request.url_root + 'auth_return')
+
+	auth_uri = flow.step1_get_authorize_url()
 	return redirect(auth_uri)
 
 @app.route('/auth_return')
 def auth_return():
+
+	flow = flow_from_clientsecrets(app.config['BASE_DIR'] + '/client_secrets.json',
+	                               scope='https://spreadsheets.google.com/feeds',
+	                               redirect_uri=request.url_root + 'auth_return')
+
 	code = request.args['code']
-	credentials = app.config['FLOW'].step2_exchange(code)
+	credentials = flow.step2_exchange(code)
 
 	# Apply necessary credential headers to all request made by an httplib2.Http instance
 	http = httplib2.Http()

@@ -65,6 +65,19 @@
 						</ul>
 					</li>
 				</ul>-->
+				<!-- List of Worksheets -->
+				{% if worksheets %}
+				<ul class="nav navbar-nav">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Worksheets <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							{% for worksheet in worksheets %}
+							<li><a href="/worksheet/{{ worksheet.id }}">{{ worksheet.title }}</a></li>
+							{% endfor %}
+						</ul>
+					</li>
+				</ul>
+				{% endif %}
 				<!-- <form class="navbar-form navbar-left" role="search">
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="Search">

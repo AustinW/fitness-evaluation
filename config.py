@@ -29,8 +29,3 @@ SECRET_KEY = "secret"
 GOOGLE_OAUTH_AUTHORIZED_CREDENTIALS = BASE_DIR + '/.credentials.json'
 
 GOOGLE_SHEETS_ID = '19WBz6tcl5_6khFxGjlrmAngobsX4s5RVaw3oJmBmuJw'
-
-from oauth2client.client import flow_from_clientsecrets
-FLOW = flow_from_clientsecrets(BASE_DIR + '/client_secrets.json',
-                               scope='https://spreadsheets.google.com/feeds',
-                               redirect_uri='http://localhost:5000/auth_return')
