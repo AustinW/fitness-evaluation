@@ -8,8 +8,14 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 # Define the database - we are working with
 # SQLite for this example
 if os.environ.get('DATABASE_URL') is None:
+	print '######################'
+	print '# Environment: Local #'
+	print '######################'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
 else:
+	print '###########################'
+	print '# Environment: Production #'
+	print '###########################'
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 DATABASE_CONNECT_OPTIONS = {}
