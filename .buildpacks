@@ -1,2 +1,2 @@
-https://bitbucket.org/samcday/heroku-buildpack-bower.git#master
-https://github.com/heroku/heroku-buildpack-python.git#master
+https://github.com/heroku/heroku-buildpack-python
+https://github.com/ejholmes/heroku-buildpack-bower
