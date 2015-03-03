@@ -11,12 +11,12 @@ if os.environ.get('DATABASE_URL') is None:
 	print '######################'
 	print '# Environment: Local #'
 	print '######################'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
+	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
 else:
 	print '###########################'
 	print '# Environment: Production #'
 	print '###########################'
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+	SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 DATABASE_CONNECT_OPTIONS = {}
 
