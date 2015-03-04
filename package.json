@@ -1,0 +1,26 @@
+{
+  "name": "fitness-test",
+  "version": "1.0.0",
+  "description": "Evaluate the overall fitness of our World Elite athletes.",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://austinw@github.com/AustinW/fitness-evaluation.git"
+  },
+  "author": "Austin White",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AustinW/fitness-evaluation/issues"
+  },
+  "homepage": "https://github.com/AustinW/fitness-evaluation",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-uglify": "^0.8.0",
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}

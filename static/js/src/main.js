@@ -16,6 +16,7 @@ function slug(str) {
 	return str;
 }
 
+
 $(function() {
 	function changeView(event, data) {
 
