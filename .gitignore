@@ -3,5 +3,6 @@ app.db
 **/*.pyc
 ./*.pyc
 
+env
 bower_components
 node_modules
