@@ -275,7 +275,7 @@ def auth_return():
 	storage = Storage(app.config['GOOGLE_OAUTH_AUTHORIZED_CREDENTIALS'])
 	storage.put(credentials)
 
-	if 'redirect_url' in session:
+	if 'redirect_url' in session and not session['redirect_url'].find('authorize'):
 		redirect_url = session['redirect_url']
 		session.pop('redirect_url')
 		return redirect(redirect_url)

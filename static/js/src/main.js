@@ -59,9 +59,11 @@ $(function() {
 	console.log(urlSegments[urlSegments.length - 1]);
 
 	// Initialize with overall results
-	changeView(null, {
-		worksheet: urlSegments[urlSegments.length - 1]
-	});	
+	if ($('#graph').length) {
+		changeView(null, {
+			worksheet: urlSegments[urlSegments.length - 1]
+		});
+	}
 
 	$('#category-selector').on('changed.fu.selectlist', changeView);
 });
