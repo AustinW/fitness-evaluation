@@ -6,9 +6,9 @@
 
 		
 		<div class="col-md-3 col-sm-3">
-			<a href="/" class="btn btn-sm btn-default">&laquo; Worksheets</a>
+			<a href="/" class="btn btn-sm btn-default">&laquo; Weeks</a>
 
-			<h1>{{ worksheet.get_title() }}</h1>
+			<h1>{{ week.title() }}</h1>
 
 			<h3>Top Athletes</h3>
 
@@ -19,10 +19,10 @@
 					<span class="sr-only">Toggle Dropdown</span>
 				</button>
 				<ul class="dropdown-menu" role="menu">
-					<li data-worksheet="{{ worksheet.get_id() }}"><a href="#">Overall</a></li>
+					<li data-worksheet="{{ week.id() }}"><a href="#">Overall</a></li>
 					<li class="divider"></li>
 					{% for category in categories %}
-					<li data-worksheet="{{ worksheet.get_id() }}" data-category="{{ category | slug }}">
+					<li data-worksheet="{{ week.id() }}" data-category="{{ category }}">
 						<a href="#">{{ category }}</a>
 					</li>
 					{% endfor %}

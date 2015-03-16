@@ -1,5 +1,5 @@
 from category_mapper import CategoryMapper
-from helpers import clean_name
+from helpers import clean_name, slug
 
 class CategoryRanking:
 
@@ -8,7 +8,7 @@ class CategoryRanking:
 	category_stats = None
 
 	# Eventually map these out, but for now just ignore
-	ignore_for_now = [
+	IGNORE_FOR_NOW = [
 		'10 bounce',
 		'Swing time',
 		'3/4 back cody tuck',
@@ -28,25 +28,24 @@ class CategoryRanking:
 		self.category = category
 		self.category_stats = category_stats
 
-	def points(self, athlete_stat):
+		# Get instance of our category mapper
+		self.mapper = CategoryMapper()
 
-		if self.category in self.ignore_for_now:
+	def points(self, athlete):
+		if self.category in CategoryRanking.IGNORE_FOR_NOW:
 			return 0
 		
-		# Get instance of our category mapper
-		mapper = CategoryMapper()
-
 		# Use category mapper to properly sort the stats
-		sorter = mapper.sort_stats(self.category)
+		sorter = self.mapper.sorter(self.category)
 
 		if sorter.__name__ == 'yes_no_sort':
-			
+
 			for stat in self.category_stats:
 
 				# Find the athlete and break
-				if stat[self.ATHLETE_OBJECT].name == clean_name(athlete_stat['Name']):
+				if stat[self.ATHLETE_OBJECT].name == athlete.name:
 
-					return 1 if stat[1] == 'Yes' else 0
+					return 1 if stat[self.SCORE] == 'Yes' else 0
 
 				return 0
 		else:
@@ -57,14 +56,34 @@ class CategoryRanking:
 			# Find where the athlete exists in the list
 			index = 0
 
-			for athleteObj, score in sorted_stats:
+			remaining_points = len(sorted_stats)
+
+			# Keep track of last rank in case of tie
+			previous_points = remaining_points
+
+			athlete_points = None
+
+			for athlete_name, score in sorted_stats:
+
+				if score == -1.0:
+					athlete_points = 0
+
+				# Detect if there was a tie
+				if score == sorted_stats[index - 1][self.SCORE]:
+					athlete_points = previous_points
+					remaining_points -= 1
+				else:
+					athlete_points = remaining_points
+					remaining_points -= 1
+
+				previous_points = athlete_points
 
 				# Find the athlete and break
-				if athleteObj.name == clean_name(athlete_stat['Name']):
-					break
-				
-				if score != -1.0:
-					index += 1
+				if athlete_name == athlete.name:
 
-			return len(sorted_stats) - index
+					return athlete_points
+
+				index += 1
+
+
 

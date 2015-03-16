@@ -182,9 +182,9 @@ def seed_athlete_groups():
 
 			group = Group().query.filter_by(id=athlete_mappings[athlete.name]).first()
 
-			group.athletes.append(athlete)
+			group.athlete_names.append(athlete)
 
-			print group.athletes
+			print group.athlete_names
 
 			db.session.add(group)
 			db.session.commit()

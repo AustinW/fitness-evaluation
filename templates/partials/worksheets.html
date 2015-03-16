@@ -4,7 +4,7 @@
 	{% if worksheets %}
 	<ul class="nav nav-pills nav-stacked">
 		{% for worksheet in worksheets %}
-		<li><a href="/worksheet/{{ worksheet.id }}">{{ worksheet.title }}</a></li>
+		<li><a href="/week/{{ worksheet.id() }}">{{ worksheet.title() }}</a></li>
 		{% endfor %}
 	</ul>
 	<hr />

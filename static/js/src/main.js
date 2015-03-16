@@ -31,7 +31,7 @@ $(function() {
 
 		getResults(data.worksheet, params, $('#rankings-table').find('tbody'));
 
-		$.get('/worksheet/' + data.worksheet + '/graph?' + $.param(params), function(response) {
+		$.get('/week/' + data.worksheet + '/graph?' + $.param(params), function(response) {
 			$('#graph').html(response);
 		});
 	}
@@ -41,7 +41,7 @@ $(function() {
 
 		var paramStr = $.param(params);
 		
-		$.getJSON('/worksheet/' + worksheetId + '.json?' + paramStr, function(response) {
+		$.getJSON('/week/' + worksheetId + '.json?' + paramStr, function(response) {
 
 			table.empty();
 			

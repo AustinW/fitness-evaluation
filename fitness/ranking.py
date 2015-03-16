@@ -5,47 +5,33 @@ from operator import itemgetter
 
 class Ranking:
 
-	worksheet = None
+	RESULT = 1
 
-	def __init__(self, worksheet):
-		self.worksheet = worksheet
+	def __init__(self, athletes):
+		self.athletes = athletes
 
-	def overall_ranking(self):
+	def overall_ranking(self, week_id):
 
 		# Initialize empty array that will eventually contain sorted tuples of (name, score)
 		overall_ranking = []
 
-		# Get all results
-		results = self.worksheet.get_athlete_stats()
-
-		# Get all athletes
-		athletes = self.worksheet.get_athletes()
-
-		# Get all categories
-		categories = self.worksheet.get_categories()
-
 		# Loop through for each athlete
-		for athlete in athletes:
-
-			# Athlete's stats
-			stats = self.get_stats_for_athlete(athlete.name, results)
+		for athlete in self.athletes.values():
 
 			# Athlete's running total
 			total_points = 0
 
 			# Loop through each of the categories
-			for category in categories:
+			for category in athlete.categories[week_id]:
 
 				# Get stats for the category
-				category_stats = self.worksheet.get_category_stats(slug(category))
+				category_stats = self.category_stats(week_id, category)
 
 				# Get category rankings object
 				category_ranking = CategoryRanking(category, category_stats)
 
 				# Get athlete's points based on their result
-				category_points = category_ranking.points(stats)
-
-				# print athlete.name + " (" + category + "): " + str(category_points)
+				category_points = category_ranking.points(athlete)
 
 				# Add the category points to their total points
 				total_points += category_points
@@ -57,6 +43,32 @@ class Ranking:
 		overall_ranking.sort(key=itemgetter(1), reverse=True)
 
 		return overall_ranking
+
+	def category_stats(self, week_id, category):
+
+		stats = []
+		for name, athlete in self.athletes.iteritems():
+			stats.append((name, athlete.categories[week_id][category]))
+
+		return self.get_sorted(stats)
+
+	@staticmethod
+	def get_sorted(stats_list):
+
+		# Sort by value
+		stats_list.sort(key=itemgetter(1))
+
+		regular_results = []
+		failed_results = []
+
+		# Put -1's at the back
+		for i in range(len(stats_list)):
+			if stats_list[i][Ranking.RESULT] == -1.0:
+				failed_results.append(stats_list[i])
+			else:
+				regular_results.append(stats_list[i])
+
+		return regular_results + failed_results
 
 	def partial_ranking(self, athletes):
 

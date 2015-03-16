@@ -16,222 +16,121 @@ import httplib2
 from graph import Graph
 
 from app import app
-from models import Athlete, Group
 
-from fitness.fitness_sheet import FitnessSheet
+from fitness.fitness import Fitness
+from fitness.week import Week
 from fitness.ranking import Ranking
+from fitness.category_mapper import CategoryMapper
 from helpers import slug
 
 from oauth2client.client import flow_from_clientsecrets
 
 storage = Storage(app.config['GOOGLE_OAUTH_AUTHORIZED_CREDENTIALS'])
 
+@app.route('/refactor')
+def refactor():
+	try:
+		fitness = Fitness(app.config['GOOGLE_SHEETS_ID'])
+		athletes = fitness.athletes()
+		fitness.generate_all_stats()
+
+		ranking = Ranking(athletes)
+		print ranking.overall_ranking('oulqdya')
+
+		return 'Done'
+
+	except Exception as e:
+		return render_template('error.html', message=e.message)
+
 @app.route('/')
 def index():
 	try:
-		mainSheet = FitnessSheet(storage, app.config['GOOGLE_SHEETS_ID'])
-		worksheets = mainSheet.get_worksheets()
+		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'])
+		worksheets = mainSheet.weeks()
 
-		return render_template('index.html', worksheets=worksheets)
+		return render_template('index.html', worksheets=worksheets.values())
 	
-	except (GSpreadException, HTTPError) as e:
-		return render_template('index.html')
+	except Exception as e:
+		return render_template('error.html', message=e.message)
 
-@app.route('/worksheet/<worksheet_id>')
-def show_worksheet(worksheet_id):
+@app.route('/week/<worksheet_id>')
+def show_week(worksheet_id):
 	try:
-		mainSheet = FitnessSheet(storage, app.config['GOOGLE_SHEETS_ID'])
+		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'])
 
-		fitnessWorksheet = mainSheet.get_worksheet_by_id(worksheet_id)
+		week = mainSheet.week(worksheet_id)
 
-		if not fitnessWorksheet:
+		if not week:
 			return render_template('404.html', message='Could not find the specified worksheet')
 
 		return render_template('worksheet.html',
-			worksheets=mainSheet.get_worksheets(),
-			worksheet=fitnessWorksheet,
-			categories=fitnessWorksheet.get_categories()
+			weeks=mainSheet.weeks().values(),
+			week=week,
+			categories=week.categories()
 		)
 
-	except GSpreadException as e:
-		# Refresh token
-		session['redirect_url'] = request.url
-		return redirect('/authorize')
-
-	except HTTPError as e:
-		# Refresh token
-		session['redirect_url'] = request.url
-		return redirect('/authorize')
-
-
-@app.route('/categories/<category>')
-def show_category(category):
-	try:
-
-		worksheet = FitnessWorksheet(app.config)
-		
-		athlete_stats = worksheet.get_category_stats(category)
-
-		category_name = worksheet.slug_to_category_name(category).title()
-
-		print worksheet.get_plot(category)
-
-		return render_template('category.html', worksheet=worksheet, athlete_stats=athlete_stats, category=category_name)
-	except HTTPError as e:
-		session['redirect_url'] = request.url
-		return redirect('/authorize')
+	except Exception as e:
+		return render_template('error.html', message=e.message)
 
 @app.route('/worksheet/<worksheet_id>/<category>')
 def show_worksheet_category(worksheet_id, category):
 
 	try:
-		mainSheet = FitnessSheet(storage, app.config['GOOGLE_SHEETS_ID'])
+		mainSheet = Week(storage, app.config['GOOGLE_SHEETS_ID'])
 
-		fitnessWorksheet = mainSheet.get_worksheet_by_id(worksheet_id)
+		fitnessWorksheet = mainSheet.week(worksheet_id)
 
 		if not fitnessWorksheet:
 			return render_template('404.html', message='Could not find the specified worksheet')
 
 		return render_template('worksheet.html', worksheet=fitnessWorksheet)
 
-	except GSpreadException as e:
-		# Refresh token
-		session['redirect_url'] = request.url
-		return redirect('/authorize')
-
-	except HTTPError as e:
-		# Refresh token
-		session['redirect_url'] = request.url
-		return redirect('/authorize')
+	except Exception as e:
+		return render_template('error.html', message=e.message)
 
 
-@app.route('/worksheet/<worksheet_id>.json')
-def json_stats(worksheet_id):
+@app.route('/week/<worksheet_id>.json', defaults = {'show': 'json'})
+@app.route('/week/<worksheet_id>/graph', defaults = {'show': 'graph'})
+def json_stats(worksheet_id, show):
 	try:
-		mainSheet = FitnessSheet(storage, app.config['GOOGLE_SHEETS_ID'])
+		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'])
+		mainSheet.generate_all_stats()
 
-		fitnessWorksheet = mainSheet.get_worksheet_by_id(worksheet_id)
+		week = mainSheet.week(worksheet_id)
+		week.set_fitness_ref(mainSheet)
 
-		if not fitnessWorksheet:
-			return render_template('404.html', message='Could not find the specified worksheet')
+		if not week:
+			return Response(jsonify({'message': 'Could not find the specified worksheet'}), 404)
 
 		if 'category' in request.args:
 			category = request.args['category']
-			category_stats = fitnessWorksheet.get_category_stats(category)
+			mapper = CategoryMapper()
+			sorter = mapper.sorter(category)
+			category_stats = week.stats_for_category(category, sorter)
 			stats = [{'athlete': category_stat[0].as_dict(), 'score': category_stat[1]} for category_stat in category_stats]
 
-		elif 'group' in request.args:
-			try:
-				group = Group().query.filter_by(id=int(request.args['group'])).first()
-
-				athletes = group.athletes
-
-				ranking = Ranking(fitnessWorksheet)
-
-				start = time.clock()
-
-				partial_ranking = [{'athlete': athlete.as_dict(), 'score': score} for athlete, score in ranking.partial_ranking(athletes)]
-
-				end = time.clock()
-
-				print 'Elapsed time: ' + str((end - start)) + ' seconds'
-
-				return Response(json.dumps(partial_ranking), mimetype='application/json')
-
-			except Exception as e:
-				print traceback.format_exc()
-				return jsonify({'message': 'Could not identify group', 'error': e.message})
-
 		else:
+			ranking = Ranking(week.athletes())
 
-			ranking = Ranking(fitnessWorksheet)
+			for name, athlete in week.athletes().iteritems():
+				print name, athlete.categories
 
-			overall_ranking = ranking.overall_ranking()
+			overall_ranking = ranking.overall_ranking(worksheet_id)
 
 			stats = [{'athlete': athlete.as_dict(), 'score': score} for athlete, score in overall_ranking]
 
-		return Response(json.dumps(stats), mimetype='application/json')
-
-		# return jsonify(stats)
-
-	except GSpreadException as e:
-		# Refresh token
-		session['redirect_url'] = request.url
-		return redirect('/authorize')
-
-	except HTTPError as e:
-		# Refresh token
-		session['redirect_url'] = request.url
-		return redirect('/authorize')
-
-@app.route('/worksheet/<worksheet_id>/graph')
-def graph_stats(worksheet_id):
-	try:
-		mainSheet = FitnessSheet(storage, app.config['GOOGLE_SHEETS_ID'])
-
-		fitnessWorksheet = mainSheet.get_worksheet_by_id(worksheet_id)
-
-		if not fitnessWorksheet:
-			return render_template('404.html', message='Could not find the specified worksheet')
-
-		graph = Graph()
-
-		if 'category' in request.args:
-			category = request.args['category']
-			category_name = fitnessWorksheet.slug_to_category_name(category)
-			category_stats = fitnessWorksheet.get_category_stats(category)
-			
-			stats = [{'athlete': category_stat[0].as_dict(), 'score': category_stat[1]} for category_stat in category_stats]
-
-			return graph.get_line_graph(category_name, category_name, stats)
-
-		if 'group' in request.args:
-			try:
-				group = Group().query.filter_by(id=int(request.args['group'])).first()
-
-				athletes = group.athletes
-
-				ranking = Ranking(fitnessWorksheet)
-
-				start = time.clock()
-
-				partial_ranking = [{'athlete': athlete.as_dict(), 'score': score} for athlete, score in ranking.partial_ranking(athletes)]
-
-				end = time.clock()
-
-				print 'Elapsed time: ' + str((end - start)) + ' seconds'
-
-				return Response(json.dumps(partial_ranking), mimetype='application/json')
-
-			except Exception as e:
-				print traceback.format_exc()
-				return jsonify({'message': 'Could not identify group', 'error': e.message})
-
-		else:
-
-			ranking = Ranking(fitnessWorksheet)
-
-			overall_ranking = ranking.overall_ranking()
-
-			stats = [{'athlete': athlete.as_dict(), 'score': score} for athlete, score in overall_ranking]
-
+		if show == 'json':
+			return Response(json.dumps(stats), mimetype='application/json')
+		elif show == 'graph':
+			graph = Graph()
 			return graph.get_line_graph('Overall Ranking', 'Overall Points', stats)
 
-
-
-		return Response(json.dumps(stats), mimetype='application/json')
-
 		# return jsonify(stats)
 
-	except GSpreadException as e:
-		# Refresh token
-		session['redirect_url'] = request.url
-		return redirect('/authorize')
-
-	except HTTPError as e:
-		# Refresh token
-		session['redirect_url'] = request.url
-		return redirect('/authorize')
+	except Exception as e:
+		response = jsonify(message=e.message)
+		response.status_code = 400
+		return response
 
 @app.route('/deauthorize')
 def deauthorize():
@@ -242,7 +141,7 @@ def deauthorize():
 		return redirect('/')
 
 	except Exception as e:
-		
+
 		# Change error
 		return render_template('404.html', message=e.message)
 

@@ -76,7 +76,7 @@ class CategoryMapper:
 		return category_stats
 
 
-	def sort_stats(self, category):
+	def sorter(self, category):
 
 		return self.category_maps[slug(category)]
 

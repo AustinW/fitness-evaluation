@@ -1,4 +1,5 @@
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy import orm
 
 from app import db
 
@@ -21,6 +22,14 @@ class Athlete(db.Model):
 	def __init__(self, name=None):
 		self.name = name
 
+	@orm.reconstructor
+	def init_on_load(self):
+		self.categories = {}
+		self.ranking_points = {}
+
+	def add_category(self, worksheet_id, cat_name, cat_score):
+		self.categories[worksheet_id][cat_name] = cat_score
+
 	def __repr__(self):
 		return '<Athlete %r>' % (self.name)
 
@@ -32,7 +41,8 @@ class Athlete(db.Model):
 			'usag_id':  self.usag_id,
 			'name':     self.name,
 			'birthday': self.birthday.strftime('%m/%d/%Y'),
-			'gender':   self.gender
+			'gender':   self.gender,
+			'categories': self.categories
 		}
 
 class Group(db.Model):
