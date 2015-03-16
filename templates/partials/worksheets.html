@@ -1,4 +1,4 @@
-<div class="col-md-2">
+<div class="col-md-2 col-sm-12">
 	<h4>Select a worksheet</h4>
 	<hr />
 	{% if worksheets %}
@@ -8,8 +8,5 @@
 		{% endfor %}
 	</ul>
 	<hr />
-	<a href="/deauthorize" class="btn btn-danger btn-lg">Deactivate</a>
-	{% else %}
-	<a href="/authorize" class="btn btn-success btn-lg">Get Started</a>
 	{% endif %}
 </div>

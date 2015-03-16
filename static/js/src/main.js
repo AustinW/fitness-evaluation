@@ -31,8 +31,10 @@ $(function() {
 
 		getResults(data.worksheet, params, $('#rankings-table').find('tbody'));
 
-		$.get('/week/' + data.worksheet + '/graph?' + $.param(params), function(response) {
-			$('#graph').html(response);
+		var url = '/week/' + data.worksheet + '/graph?' + $.param(params);
+
+		$.get(url, function(response) {
+			$('#graph').html('<a href="' + url + '" target="_blank">' + response + '</a>');
 		});
 	}
 
