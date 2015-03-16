@@ -6,8 +6,6 @@ import json, time
 import traceback
 
 # Google API
-from gspread import GSpreadException
-from gspread.httpsession import HTTPError
 from oauth2client.file import Storage
 
 # Python standard library

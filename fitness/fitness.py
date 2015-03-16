@@ -3,7 +3,7 @@ from models import Athlete
 from week import Week
 
 # Google API
-from gspread import Client
+from gspread_mod import Client
 from gspread.urls import construct_url
 from gspread.httpsession import HTTPSession
 from gspread.utils import finditem
@@ -135,24 +135,6 @@ class Fitness:
 			for name in week.athlete_names():
 
 				self._athletes[name].categories[week_id] = week.stats_for_athlete(name)
-
-	# def get_category_stats(self, category):
-	# 	# category_index = self.get_category_index_from_name(category)
-	#
-	# 	category_name = self.slug_to_category_name(category)
-	#
-	# 	stats = [item[category_name] for item in self.all_results]
-	#
-	# 	athletes = self.all_athletes(False)
-	#
-	# 	if len(athletes) == len(stats):
-	# 		result_tuples = zip(athletes, stats)
-	#
-	# 		results_as_floats = self.safe_convert(result_tuples, float)
-	#
-	# 		return self.get_sorted(results_as_floats)
-	# 	else:
-	# 		return stats
 
 	def slug_to_category_name(self, the_slug):
 
