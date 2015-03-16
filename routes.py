@@ -25,21 +25,6 @@ from oauth2client.client import flow_from_clientsecrets
 
 storage = Storage(app.config['GOOGLE_OAUTH_AUTHORIZED_CREDENTIALS'])
 
-@app.route('/refactor')
-def refactor():
-	try:
-		fitness = Fitness(app.config['GOOGLE_SHEETS_ID'])
-		athletes = fitness.athletes()
-		fitness.generate_all_stats()
-
-		ranking = Ranking(athletes)
-		print ranking.overall_ranking('oulqdya')
-
-		return 'Done'
-
-	except Exception as e:
-		return render_template('error.html', message=e.message)
-
 @app.route('/')
 def index():
 	try:
@@ -109,9 +94,6 @@ def json_stats(worksheet_id, show):
 
 		else:
 			ranking = Ranking(week.athletes())
-
-			for name, athlete in week.athletes().iteritems():
-				print name, athlete.categories
 
 			overall_ranking = ranking.overall_ranking(worksheet_id)
 

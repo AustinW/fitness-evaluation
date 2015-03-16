@@ -79,8 +79,3 @@ class CategoryMapper:
 	def sorter(self, category):
 
 		return self.category_maps[slug(category)]
-
-# catMapper = CategoryMapper()
-# sorter = catMapper.category_maps['rope-climb']
-# print sorter.__name__
-# print sorter([('Austin White', 10.98), ('John Doe', 12.00)])
