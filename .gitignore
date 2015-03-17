@@ -7,3 +7,4 @@ env
 bower_components
 node_modules
 .idea
+error.log

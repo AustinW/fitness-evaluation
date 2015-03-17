@@ -7,6 +7,9 @@ from routes import app
 
 import argparse
 
+import logging
+from logging.handlers import RotatingFileHandler
+
 if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser(description='Development Server Help')
@@ -24,5 +27,14 @@ if __name__ == "__main__":
 		"use_debugger": True if cmd_args.debug_mode else False,
 		"use_reloader": True if cmd_args.debug_mode else False,
 	}
+
+	import logging
+	logging.basicConfig(filename=app.config['BASE_DIR'] + 'error.log', level=logging.ERROR)
+
+	# handler = RotatingFileHandler(app.config['BASE_DIR'] + 'error.log', maxBytes=1024 * 1024 * 50, backupCount=2)
+	# handler.setLevel(logging.DEBUG)
+	# formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+	# handler.setFormatter(formatter)
+	# app.logger.addHandler(handler)
 
 	app.run(**app_options)

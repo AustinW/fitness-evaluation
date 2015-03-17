@@ -105,8 +105,6 @@ def json_stats(worksheet_id, show):
 			graph = Graph()
 			return graph.get_line_graph('Overall Ranking', 'Overall Points', stats)
 
-		# return jsonify(stats)
-
 	except Exception as e:
 		response = jsonify(message=e.message)
 		response.status_code = 400
@@ -161,6 +159,10 @@ def auth_return():
 	else:
 		return redirect('/')
 
+@app.errorhandler(500)
+def internal_error(exception):
+	app.logger.exception(exception)
+	return render_template('error.html'), 500
 @app.errorhandler(404)
 def not_found(error):
 	return render_template('404.html'), 404
