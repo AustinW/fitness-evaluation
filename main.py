@@ -23,7 +23,7 @@ if __name__ == "__main__":
 	app_options = {
 		"host": "0.0.0.0",
 		"port": int(os.environ.get("PORT", cmd_args.port)),
-		"debug": True if cmd_args.debug_mode else False,
+		"debug": True, # if cmd_args.debug_mode else False
 		"use_debugger": True if cmd_args.debug_mode else False,
 		"use_reloader": True if cmd_args.debug_mode else False,
 	}
