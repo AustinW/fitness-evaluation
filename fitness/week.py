@@ -54,11 +54,10 @@ class Week:
 		if len(athletes) == len(stats):
 			result_tuples = zip(athletes, stats)
 
-			#TODO: Figure out how to keep sort. Probably javascript
 			preliminary_sort = self.get_sorted(result_tuples)
 			real_sort = sorter(preliminary_sort)
 
-			return self.get_sorted(result_tuples)
+			return real_sort
 		else:
 			raise Exception("Problem sorting athlete stats")
 
