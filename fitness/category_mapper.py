@@ -18,6 +18,8 @@ class CategoryMapper:
 			'20s-box-jumps': CategoryMapper.maximum_sort,
 			'20s-step-ups': CategoryMapper.maximum_sort,
 			'1-min-handstand': CategoryMapper.maximum_sort,
+			'1-min-30s-handstand': CategoryMapper.maximum_sort,
+			'2-min-handstand': CategoryMapper.maximum_sort,
 			'10s-standing-back-tucks': CategoryMapper.maximum_sort,
 			'10s-standing-back-pikes': CategoryMapper.maximum_sort,
 			'standing-arabian': CategoryMapper.yes_no_sort,
