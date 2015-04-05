@@ -29,7 +29,7 @@ if __name__ == "__main__":
 	}
 
 	import logging
-	logging.basicConfig(filename=app.config['BASE_DIR'] + 'error.log', level=logging.ERROR)
+	logging.basicConfig(filename=app.config['BASE_DIR'] + '/error.log', level=logging.ERROR)
 
 	# handler = RotatingFileHandler(app.config['BASE_DIR'] + 'error.log', maxBytes=1024 * 1024 * 50, backupCount=2)
 	# handler.setLevel(logging.DEBUG)

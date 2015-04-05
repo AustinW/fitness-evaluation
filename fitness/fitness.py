@@ -133,8 +133,10 @@ class Fitness:
 
 			# Loop through each week's athletes
 			for name in week.athlete_names():
-
-				self._athletes[name].categories[week_id] = week.stats_for_athlete(name)
+				try:
+					self._athletes[name].categories[week_id] = week.stats_for_athlete(name)
+				except Exception as e:
+					raise Exception("Could not find " + name + " in the athlete database")
 
 	def slug_to_category_name(self, the_slug):
 

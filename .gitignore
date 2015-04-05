@@ -1,5 +1,4 @@
 .credentials.json
-app.db
 **/*.pyc
 ./*.pyc
 
