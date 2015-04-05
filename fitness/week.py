@@ -18,7 +18,10 @@ class Week:
 		if self._categories:
 			return self._categories
 
-		self._categories = [item for item in self._records[0].keys() if item != 'Name' and item != 'Timestamp']
+		if len(self._records):
+			self._categories = [item for item in self._records[0].keys() if item != 'Name' and item != 'Timestamp']
+		else:
+			self._categories = []
 
 		return self._categories
 

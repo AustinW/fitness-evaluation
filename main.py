@@ -23,13 +23,13 @@ if __name__ == "__main__":
 	app_options = {
 		"host": "0.0.0.0",
 		"port": int(os.environ.get("PORT", cmd_args.port)),
-		"debug": True, # if cmd_args.debug_mode else False
+		"debug": cmd_args.debug_mode, # if cmd_args.debug_mode else False
 		"use_debugger": True if cmd_args.debug_mode else False,
 		"use_reloader": True if cmd_args.debug_mode else False,
 	}
 
 	import logging
-	logging.basicConfig(filename=app.config['BASE_DIR'] + '/error.log', level=logging.ERROR)
+	logging.basicConfig(filename=app.config['BASE_DIR'] + '/error.log', level=logging.INFO)
 
 	# handler = RotatingFileHandler(app.config['BASE_DIR'] + 'error.log', maxBytes=1024 * 1024 * 50, backupCount=2)
 	# handler.setLevel(logging.DEBUG)
