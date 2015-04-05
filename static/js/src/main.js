@@ -43,7 +43,7 @@ $(function() {
 
 		var paramStr = $.param(params);
 		
-		$.getJSON('/week/' + worksheetId + '.json?' + paramStr, function(response) {
+		$.getJSON('/week/' + worksheetId + '.json?' + paramStr).done(function(response) {
 
 			table.empty();
 			
@@ -54,7 +54,14 @@ $(function() {
 
 			$('#rankings-table').fadeIn();
 			$('#rankings-table-spinner').fadeOut();
+		}).fail(function(response) {
+			showError(response.responseJSON.message);
 		});
+	}
+
+	function showError(msg) {
+		$('.error-display').find('.error-message').html(msg);
+		$('.error-display').fadeIn();
 	}
 
 	urlSegments = window.location.pathname.split('/');
