@@ -174,20 +174,20 @@ def seed_athlete_groups():
 		'Oliver': 12
 	}
 
-	athletes = Athlete().query.all()
+	# athletes = Athlete().query.all()
 
-	for athlete in athletes:
+	# for athlete in athletes:
 
-		if athlete.name in athlete_mappings:
+	# 	if athlete.name in athlete_mappings:
 
-			group = Group().query.filter_by(id=athlete_mappings[athlete.name]).first()
+	# 		group = Group().query.filter_by(id=athlete_mappings[athlete.name]).first()
 
-			group.athlete_names.append(athlete)
+	# 		group.athlete_names.append(athlete)
 
-			print group.athlete_names
+	# 		print group.athlete_names
 
-			db.session.add(group)
-			db.session.commit()
+	# 		db.session.add(group)
+	# 		db.session.commit()
 
 
 

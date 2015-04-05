@@ -1,3 +1,5 @@
+#!/bin/sh
+
 rm -rf migrations app.db
 python manage.py db init
 python manage.py db migrate
