@@ -11,14 +11,12 @@ if os.environ.get('DATABASE_URL') is None:
 	print '######################'
 	print '# Environment: Local #'
 	print '######################'
-	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
 else:
 	print '###########################'
 	print '# Environment: Production #'
 	print '###########################'
-	SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
-DATABASE_CONNECT_OPTIONS = {}
+ATHLETE_DB_PATH = os.path.join(BASE_DIR, 'roster.json')
 
 # Application threads. A common general assumption is
 # using 2 per available processor cores - to handle

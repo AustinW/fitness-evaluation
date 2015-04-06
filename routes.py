@@ -39,7 +39,7 @@ def index():
 @app.route('/week/<worksheet_id>')
 def show_week(worksheet_id):
 	try:
-		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'])
+		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'], app.config['ATHLETE_DB_PATH'])
 
 		week = mainSheet.week(worksheet_id)
 
@@ -59,7 +59,7 @@ def show_week(worksheet_id):
 def show_worksheet_category(worksheet_id, category):
 
 	try:
-		mainSheet = Week(storage, app.config['GOOGLE_SHEETS_ID'])
+		mainSheet = Week(storage, app.config['GOOGLE_SHEETS_ID'], app.config['ATHLETE_DB_PATH'])
 
 		fitnessWorksheet = mainSheet.week(worksheet_id)
 
@@ -76,7 +76,7 @@ def show_worksheet_category(worksheet_id, category):
 @app.route('/week/<worksheet_id>/graph', defaults = {'show': 'graph'})
 def json_stats(worksheet_id, show):
 	try:
-		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'])
+		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'], app.config['ATHLETE_DB_PATH'])
 		mainSheet.generate_all_stats()
 
 		week = mainSheet.week(worksheet_id)

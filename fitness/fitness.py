@@ -13,23 +13,21 @@ from gspread.models import Spreadsheet, Worksheet
 
 from xml.etree import ElementTree
 
+import json, app
+
 class Fitness:
-
-	spreadsheet_id = None
-
-	_weeks = None
-
-	config = None
-
-	_athletes = {}
 
 	NAME = 0
 	RESULT = 1
 
 	FAILED_FLAG = "-1"
 
-	def __init__(self, spreadsheet_id):
+	def __init__(self, spreadsheet_id, athlete_db_file=None):
 		self.spreadsheet_id = spreadsheet_id
+		self._weeks = None
+		self._athletes = {}
+
+		self.set_athlete_db_file(athlete_db_file)
 
 		self.weeks()
 
@@ -99,8 +97,11 @@ class Fitness:
 		if self._athletes:
 			return self._athletes
 
+		if not self.get_athlete_db_file():
+			raise Exception("Please specify the athlete database file before accessing the Fitness.athletes() method")
+
 		# Get all athletes from the database as Athlete models
-		db_athletes = Athlete().query.all()
+		db_athletes = Fitness.athletes_from_roster(self.athlete_db_file)
 
 		# Create an empty set to contain all athletes
 		all_athletes_names = set()
@@ -160,6 +161,27 @@ class Fitness:
 
 	def get_id(self):
 		return self.spreadsheet_id.id
+
+	def set_athlete_db_file(self, db_file):
+		self.athlete_db_file = db_file
+
+	def get_athlete_db_file(self):
+		return self.athlete_db_file
+
+	@staticmethod
+	def athletes_from_roster(db_path):
+
+		athlete_objects = []
+
+		with open(db_path, 'r') as db_file:
+			roster = db_file.read()
+
+			roster_json = json.loads(roster)
+
+			for athlete in roster_json:
+				athlete_objects.append(Athlete(**athlete))
+
+		return athlete_objects
 
 	@staticmethod
 	def spreadsheet_fake(client, spreadsheet_id):
