@@ -25,10 +25,18 @@ class Graph:
 
 		self.line_chart = pygal.Line(self.config)
 
-	def get_line_graph(self, title, y_axis, stats):
+	def get_line_graph(self, title, y_axis_title, stats):
 
 		self.line_chart.title = title
 		self.line_chart.x_labels = [item['athlete']['name'] for item in stats]
-		self.line_chart.add(y_axis, [item['score'] for item in stats])
+		self.line_chart.add(y_axis_title, [item['score'] for item in stats])
 		
+		return self.line_chart.render()
+
+	def get_line_graph_of_weeks(self, title, y_axis_title, stats):
+
+		self.line_chart.title = title
+		self.line_chart.x_labels = [item['week'] for item in stats]
+		self.line_chart.add(y_axis_title, [item['result'] for item in stats])
+
 		return self.line_chart.render()

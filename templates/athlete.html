@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block body %}
-<div class="container-fluid" ng-controller="WeekController">
+<div class="container-fluid" ng-controller="AthleteController">
 	<div class="row error-display">
 		<div class="col-md-12">
 			<div class="alert alert-danger alert-dismissible" role="alert">
@@ -14,44 +14,36 @@
 		<div class="col-md-3 col-sm-3">
 			<a href="/" class="btn btn-sm btn-default">&laquo; Weeks</a>
 
-			<h1>{{ week.title() }}</h1>
+			<h1 ng-init="athleteId = {{ athlete.usag_id }}">{{ athlete.name }}</h1>
 
-			<category-selector week="{{ week.id() }}" ng-model="category"></category-selector>
-
-			<h3>Top Athletes</h3>
+			<category-selector ng-model="category"></category-selector>
 
 			<hr />
-			<table class="table table-hover table-striped">
+			<table class="table table-hover table-striped" id="rankings-table-foo">
 				<thead>
 					<tr>
-						<th>#</th>
-						<th>Name</th>
+						<th>Week</th>
 						<th>Score</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="result in results">
-						<td><< ($index + 1) | ordinal >></td>
-						<td><< result.athlete.name >></td>
-						<td><< result.score >></td>
+						<td><< result.week >></td>
+						<td ng-if="category == 'Overall'"><< result.result | ordinal >></td>
+						<td ng-if="category != 'Overall'"><< result.result >></td>
 					</tr>
 				</tbody>
 			</table>
 
-			<i id="rankings-table-spinner" style="display:none" class="fa fa-spinner fa-5x fa-spin"></i>
+			<i id="rankings-table-spinner-foo" style="display:none" class="fa fa-spinner fa-5x fa-spin"></i>
 		</div>
 		<div class="col-md-9 col-sm-9">
 			<div class="well" id="graph" ng-bind-html="renderHtml(graph)"></div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-12">
-			<blockquote>
-				<p>
-					Note: Overall score is calculated as (total number of athletes - placement in category 1) + (total number of athletes - placement in category 2) + ...
-				</p>
-			</blockquote>
-		</div>
-	</div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
 {% endblock %}

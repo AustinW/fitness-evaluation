@@ -16,19 +16,24 @@ module.exports = function(grunt) {
 					'static/bower_components/jquery/dist/jquery.js',
 					'static/bower_components/bootstrap/dist/js/bootstrap.js',
 					'static/bower_components/fuelux/dist/js/fuelux.js',
-					'static/js/src/main.js'
+					'static/bower_components/angular/angular.js',
+					'static/bower_components/angularjs-ordinal-filter/ordinal.js',
+					'static/bower_components/angular-animate/angular-animate.js',
+					'static/bower_components/angular-loading-bar/build/loading-bar.js',
+					'static/js/src/app.js'
 				],
-				dest: 'static/js/tmp/concat.js',
+				dest: 'static/js/dist/built.js',
 			},
 		},
 
 		uglify: {
 			options: {
-				banner: '/*! Fitness Evaluation <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+				banner: '/*! Fitness Evaluation <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+				mangle: false
 			},
 			dist: {
 				files: {
-					'static/js/dist/built.js': ['<%= concat.dist.dest %>']
+					'static/js/dist/built.min.js': ['<%= concat.dist.dest %>']
 				}
 			}
 		},
@@ -42,7 +47,10 @@ module.exports = function(grunt) {
 		watch: {
 			scripts: {
 				files: ['Gruntfile.js', 'static/js/src/**/*.js'],
-				tasks: ['concat', 'uglify', 'clean']
+				tasks: ['concat', 'clean'],
+				options: {
+					livereload: true
+				}
 			},
 		},
 	});
@@ -51,6 +59,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-newer');
 
 	// grunt.event.on('watch', function(action, filepath, target) {
 	// 	grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
@@ -58,5 +67,6 @@ module.exports = function(grunt) {
 
 	// Default task(s).
 	grunt.registerTask('default', ['concat', 'uglify', 'clean']);
+	grunt.registerTask('original', ['concat', 'clean'])
 
 };

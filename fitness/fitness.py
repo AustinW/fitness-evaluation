@@ -119,6 +119,26 @@ class Fitness:
 
 		return self._athletes
 
+	def athlete(self, usag_id):
+
+		for athlete in self.athletes().values():
+			if athlete.usag_id == int(usag_id):
+				return athlete
+
+		return None
+
+	def categories(self):
+
+		categories = set()
+
+		for week in self.weeks().values():
+
+			for category in week.categories():
+
+				categories.add(category)
+
+		return list(categories)
+
 	def generate_all_stats(self):
 
 		"""
