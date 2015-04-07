@@ -165,6 +165,9 @@ def athlete_stats(usag_id, show):
 
 			# Show as json or a graph
 			if show == 'json':
+				# Sort the stats so later stats are to the right (convert week to a datetime object for sorting)
+				ranking_data.sort(key=lambda entry: time.strptime(entry['week'], '%m/%d/%Y'), reverse=True)
+
 				return Response(json.dumps(ranking_data), mimetype='application/json')
 			elif show == 'graph':
 				graph = Graph()
