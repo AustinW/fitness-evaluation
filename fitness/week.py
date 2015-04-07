@@ -102,6 +102,12 @@ class Week:
 	def title(self):
 		return self._worksheet.title
 
+	def as_dict(self):
+		return {
+			"id": self.id(),
+			"title": self.title()
+		}
+
 	@staticmethod
 	def get_sorted(stats_list):
 

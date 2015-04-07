@@ -16,6 +16,7 @@ module.exports = function(grunt) {
 					'static/bower_components/jquery/dist/jquery.js',
 					'static/bower_components/bootstrap/dist/js/bootstrap.js',
 					'static/bower_components/angular/angular.js',
+					'static/bower_components/angular-route/angular-route.js',
 					'static/bower_components/angularjs-ordinal-filter/ordinal.js',
 					'static/bower_components/angular-animate/angular-animate.js',
 					'static/bower_components/angular-loading-bar/build/loading-bar.js',

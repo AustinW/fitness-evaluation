@@ -1,7 +1,4 @@
-{% extends "layout.html" %}
-
-{% block body %}
-<div class="container-fluid" ng-controller="WeekController">
+<div class="container-fluid">
 	<div class="row error-display">
 		<div class="col-md-12">
 			<div class="alert alert-danger alert-dismissible" role="alert">
@@ -12,11 +9,11 @@
 	</div>
 	<div class="row">
 		<div class="col-md-3 col-sm-3">
-			<a href="/" class="btn btn-sm btn-default">&laquo; Weeks</a>
+			<a href="#/" class="btn btn-sm btn-default">&laquo; Weeks</a>
 
-			<h1>{{ week.title() }}</h1>
+			<h1>{{ week.title }}</h1>
 
-			<category-selector week="{{ week.id() }}" ng-model="category"></category-selector>
+			<category-selector week="week.id" ng-model="category" ng-change="changeCategory()"></category-selector>
 
 			<h3>Top Athletes</h3>
 
@@ -31,9 +28,9 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="result in results">
-						<td><< ($index + 1) | ordinal >></td>
-						<td><< result.athlete.name >></td>
-						<td><< result.score >></td>
+						<td>{{ ($index + 1) | ordinal }}</td>
+						<td>{{ result.athlete.name }}</td>
+						<td>{{ result.score }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -54,4 +51,3 @@
 		</div>
 	</div>
 </div>
-{% endblock %}

@@ -1,0 +1,22 @@
+<div class="container">
+	<div class="row">
+
+		<div class="col-md-2 col-sm-12">
+			<h4>Select a worksheet</h4>
+			<hr />
+			<ul class="nav nav-pills nav-stacked">
+				<li ng-repeat="week in weeks">
+					<a href="#/week/{{ week.id }}">{{ week.title }}</a>
+				</li>
+			</ul>
+			<hr />
+		</div>
+		
+		<div class="col-md-9 col-sm-12">
+			<div class="jumbotron">
+				<h1>Welcome!</h1>
+				<p>To World Elite's Fitness Evaluation</p>
+			</div>
+		</div>
+	</div>
+</div>

@@ -19,7 +19,6 @@ from fitness.fitness import Fitness
 from fitness.week import Week
 from fitness.ranking import Ranking
 from fitness.category_mapper import CategoryMapper
-from helpers import slug
 
 from oauth2client.client import flow_from_clientsecrets
 
@@ -31,33 +30,59 @@ def index():
 		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'], app.config['ATHLETE_DB_PATH'])
 		worksheets = mainSheet.weeks()
 
-		return render_template('index.html',
-			worksheets=worksheets.values(),
-			athletes=mainSheet.athletes().values()
-		)
+		return render_template('layout.html')
 	
 	except Exception as e:
 		return render_template('error.html', message=e.message)
 
-@app.route('/week/<worksheet_id>')
-def show_week(worksheet_id):
+@app.route('/api/weeks', defaults={'week_id': None})
+@app.route('/api/weeks/<week_id>')
+def list_weeks(week_id):
 	try:
 		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'], app.config['ATHLETE_DB_PATH'])
 
-		week = mainSheet.week(worksheet_id)
+		if week_id:
 
-		if not week:
-			return render_template('404.html', message='Could not find the specified worksheet')
+			# Get single week object
+			weeks_response = mainSheet.week(week_id).as_dict()
+		else:
 
-		return render_template('worksheet.html',
-			weeks=mainSheet.weeks().values(),
-			week=week,
-			athletes=mainSheet.athletes().values(),
-			categories=week.categories()
-		)
+			# Get all week objects
+			weeks = mainSheet.weeks()
+
+			weeks_response = [week.as_dict() for week in weeks.values()]
+			
+		return Response(json.dumps(weeks_response), mimetype='application/json')
 
 	except Exception as e:
-		return render_template('error.html', message=e.message)
+		response = jsonify(message=e.message)
+		response.status_code = 400
+		return response
+
+@app.route('/api/athletes', defaults = {'usag_id': None})
+@app.route('/api/athletes/<usag_id>')
+def athlete_info(usag_id):
+	try:
+		# Get main Google Sheet
+		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'], app.config['ATHLETE_DB_PATH'])
+
+		if usag_id:
+
+			# Get specific athlete object
+			athlete_response = mainSheet.athlete(usag_id).as_dict()
+
+		else:
+
+			# Get all athletes
+			athletes = mainSheet.athletes()
+			athlete_response = [athlete.as_dict() for athlete in athletes.values()]
+
+		return Response(json.dumps(athlete_response), mimetype='application/json')
+
+	except Exception as e:
+		response = jsonify(message=e.message)
+		response.status_code = 400
+		return response
 
 @app.route('/api/week/<worksheet_id>', defaults = {'show': 'json'})
 @app.route('/api/week/<worksheet_id>/graph', defaults = {'show': 'graph'})
@@ -97,30 +122,8 @@ def week_stats(worksheet_id, show):
 		response.status_code = 400
 		return response
 
-@app.route('/athlete/<usag_id>/')
-def show_athlete(usag_id):
-	try:
-		# Get main Google Sheet
-		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'], app.config['ATHLETE_DB_PATH'])
-		mainSheet.generate_all_stats()
-
-		# Get specific athlete object
-		athlete = mainSheet.athlete(usag_id)
-
-		if not athlete:
-			return render_template('404.html', message='Could not find the specified athlete')
-
-		return render_template('athlete.html',
-			athlete=athlete,
-			athletes=mainSheet.athletes().values(),
-			weeks=mainSheet.weeks().values()
-		)
-
-	except Exception as e:
-		return render_template('error.html', message=e.message)
-
-@app.route('/api/athlete/<usag_id>', defaults={'show': 'json'})
-@app.route('/api/athlete/<usag_id>/graph', defaults={'show': 'graph'})
+@app.route('/api/athletes/<usag_id>/stats', defaults={'show': 'json'})
+@app.route('/api/athletes/<usag_id>/graph', defaults={'show': 'graph'})
 def athlete_stats(usag_id, show):
 	try:
 		# Get main Google Sheet
@@ -195,63 +198,10 @@ def categories():
 		response.status_code = 400
 		return response 
 
-@app.route('/deauthorize')
-def deauthorize():
-
-	try:
-		storage.delete()
-
-		return redirect('/')
-
-	except Exception as e:
-
-		# Change error
-		return render_template('404.html', message=e.message)
-
-
-@app.route('/authorize')
-def authorize():
-
-	
-	flow = flow_from_clientsecrets(app.config['BASE_DIR'] + '/client_secrets.json',
-	                               scope='https://spreadsheets.google.com/feeds',
-	                               redirect_uri=request.url_root + 'auth_return')
-
-	auth_uri = flow.step1_get_authorize_url()
-	return redirect(auth_uri)
-
-@app.route('/auth_return')
-def auth_return():
-
-	flow = flow_from_clientsecrets(app.config['BASE_DIR'] + '/client_secrets.json',
-	                               scope='https://spreadsheets.google.com/feeds',
-	                               redirect_uri=request.url_root + 'auth_return')
-
-	code = request.args['code']
-	credentials = flow.step2_exchange(code)
-
-	# Apply necessary credential headers to all request made by an httplib2.Http instance
-	http = httplib2.Http()
-	http = credentials.authorize(http)
-
-	storage = Storage(app.config['GOOGLE_OAUTH_AUTHORIZED_CREDENTIALS'])
-	storage.put(credentials)
-
-	if 'redirect_url' in session and not session['redirect_url'].find('authorize'):
-		redirect_url = session['redirect_url']
-		session.pop('redirect_url')
-		return redirect(redirect_url)
-	else:
-		return redirect('/')
-
 @app.errorhandler(500)
 def internal_error(exception):
 	app.logger.exception(exception)
 	return render_template('error.html'), 500
 @app.errorhandler(404)
 def not_found(error):
-	return render_template('404.html'), 404
-
-@app.template_filter('slug')
-def slug_filter(text, delim=u'-'):
-	return slug(text, delim)
+	return redirect('/')

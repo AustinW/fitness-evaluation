@@ -1,10 +1,62 @@
-var app = angular.module('fitnessApp', ['ordinal', 'angular-loading-bar', 'ngAnimate']);
+var app = angular.module('fitnessApp', ['ngRoute', 'ordinal', 'angular-loading-bar', 'ngAnimate']);
 
-app.controller('WeekController', ['$scope', '$http', '$log', '$sce', 'categories', 'html', function($scope, $http, $log, $sce, categories, html) {
+app.config(['$routeProvider', function($routeProvider) {
+	$routeProvider
+		.when('/', {
+			templateUrl: 'static/templates/index.html',
+			controller: 'IndexController'
+		})
+		.when('/week/:week_id', {
+			templateUrl: 'static/templates/week.html',
+			controller: 'WeekController',
+			resolve: {
+				weeksPromise: ['$route', 'srvWeeks', function($route, srvWeeks) {
+					var week_id = $route.current.params.week_id;
+					var weekFactory = new srvWeeks();
+					return weekFactory.find(week_id);
+				}]
+			}
+		})
+		.when('/athlete/:athlete_id', {
+			templateUrl: 'static/templates/athlete.html',
+			controller: 'AthleteController',
+			resolve: {
+				athletePromise: ['$route', 'srvAthlete', function($route, srvAthlete) {
+					var athlete_id = $route.current.params.athlete_id;
+					var athleteFactory = new srvAthlete();
+					return athleteFactory.find(athlete_id);
+				}]
+			}
+		})
+		.otherwise({ templateUrl: 'static/templates/404.html' });
+}]);
+
+app.controller('IndexController', ['$scope', '$http', 'srvWeeks', function($scope, $http, srvWeeks) {
+	var weeksFactory = new srvWeeks();
+
+	weeksFactory.all().then(function() {
+		$scope.weeks = weeksFactory.weeks;
+	});
+}]);
+
+app.controller('NavigationBarController', ['$scope', '$http', 'srvWeeks', 'srvAthlete', function($scope, $http, srvWeeks, srvAthlete) {
+	var athleteFactory = new srvAthlete();
+
+	athleteFactory.all().then(function() {
+		$scope.athletes = athleteFactory.athletes;
+	});
+
+	var weeksFactory = new srvWeeks();
+
+	weeksFactory.all().then(function() {
+		$scope.weeks = weeksFactory.weeks;
+	});
+}]);
+
+app.controller('WeekController', ['$scope', '$http', '$routeParams', '$sce', 'categories', 'html', 'weeks', 'weeksPromise', function($scope, $http, $routeParams, $sce, categories, html, weeks, weeksPromise) {
 	$scope.category = 'Overall Ranking';
 
-	var segments = window.location.pathname.split( '/' );
-	$scope.weekId = segments[segments.length - 1];
+	$scope.week = weeksPromise.data;
 
 	$scope.$watch('category', function() {
 		$scope.changeCategory();
@@ -13,23 +65,25 @@ app.controller('WeekController', ['$scope', '$http', '$log', '$sce', 'categories
 	$scope.changeCategory = function() {
 		var url;
 
-		$http.get('/api/week/' + $scope.weekId + '?category=' + $scope.category).then(function(data) {
-			$scope.results = data.data;
-		});
+		if ($scope.week) {
 
-		$http.get('/api/week/' + $scope.weekId + '/graph?category=' + $scope.category).then(function(data) {
-			$scope.graph = data.data;
-		});
+			$http.get('/api/week/' + $scope.week.id + '?category=' + $scope.category).then(function(data) {
+				$scope.results = data.data;
+			});
+
+			$http.get('/api/week/' + $scope.week.id + '/graph?category=' + $scope.category).then(function(data) {
+				$scope.graph = data.data;
+			});
+		}
 	};
 
 	$scope.renderHtml = html.render;
 }]);
 
-app.controller('AthleteController', ['$scope', '$http', '$log', '$sce', 'categories', 'html', function($scope, $http, $log, $sce, categories, html) {
+app.controller('AthleteController', ['$scope', '$http', '$log', '$sce', 'categories', 'html', 'athletePromise', function($scope, $http, $log, $sce, categories, html, athletePromise) {
 	$scope.category = 'Overall';
 
-	var segments = window.location.pathname.split( '/' );
-	$scope.athleteId = segments[segments.length - 1];
+	$scope.athlete = athletePromise.data;
 
 	$scope.$watch('category', function() {
 		$scope.changeCategory();
@@ -38,11 +92,11 @@ app.controller('AthleteController', ['$scope', '$http', '$log', '$sce', 'categor
 	$scope.changeCategory = function() {
 		var url;
 
-		$http.get('/api/athlete/' + $scope.athleteId + '?category=' + $scope.category).then(function(data) {
+		$http.get('/api/athletes/' + $scope.athlete.usag_id + '/stats?category=' + $scope.category).then(function(data) {
 			$scope.results = data.data;
 		});
 
-		$http.get('/api/athlete/' + $scope.athleteId + '/graph?category=' + $scope.category).then(function(data) {
+		$http.get('/api/athletes/' + $scope.athlete.usag_id + '/graph?category=' + $scope.category).then(function(data) {
 			$scope.graph = data.data;
 		});
 	};
@@ -57,7 +111,7 @@ app.directive('categorySelector', function() {
 		replace: true,
 		transclude: true,
 		scope: {
-			week: '@'
+			week: '='
 		},
 		controller: ['$scope', 'categories', function($scope, categories) {
 			categories.retrieve($scope.week).then(function(data) {
@@ -68,6 +122,67 @@ app.directive('categorySelector', function() {
 		link: function(scope, element, attrs) {}
 	}
 });
+
+app.factory('srvWeeks', ['$http', function($http) {
+	var WeekService = function() {
+		this.week = null;
+		this.weeks = null;
+	};
+
+	WeekService.prototype.all = function() {
+		var self = this;
+
+		return $http.get('/api/weeks').then(function(response) {
+			self.weeks = response.data;
+			return response;
+		});
+	};
+
+	WeekService.prototype.find = function(week_id) {
+		var self = this;
+
+		return $http.get('/api/weeks/' + week_id).then(function(response) {
+			self.week = response.data;
+			return response;
+		})
+	};
+
+	return WeekService;
+}]);
+
+app.factory('srvAthlete', ['$http', function($http) {
+
+	var AthleteService = function() {
+		this.athlete = null;
+		this.athletes = null;
+	};
+
+	AthleteService.prototype.all = function() {
+		var self = this;
+
+		return $http.get('/api/athletes').then(function(response) {
+			self.athletes = response.data;
+			return response;
+		});
+	};
+
+	AthleteService.prototype.find = function(usag_id) {
+		var self = this;
+
+		return $http.get('/api/athletes/' + usag_id).then(function(response) {
+			self.athlete = response.data;
+			return response;
+		});
+	};
+
+	return AthleteService;
+}]);
+
+app.service('weeks', ['$http', function($http) {
+	this.retrieve = function() {
+		return $http.get('/api/weeks');
+	};
+}])
 
 app.service('html', ['$sce', function($sce) {
 	this.render = function(html) {
@@ -89,8 +204,3 @@ app.service('categories', ['$http', function($http) {
 app.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
 	cfpLoadingBarProvider.includeSpinner = false;
 }]);
-
-app.config(function($interpolateProvider) {
-	$interpolateProvider.startSymbol('<<');
-	$interpolateProvider.endSymbol('>>');
-});
