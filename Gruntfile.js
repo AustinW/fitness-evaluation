@@ -15,7 +15,6 @@ module.exports = function(grunt) {
 				src: [
 					'static/bower_components/jquery/dist/jquery.js',
 					'static/bower_components/bootstrap/dist/js/bootstrap.js',
-					'static/bower_components/fuelux/dist/js/fuelux.js',
 					'static/bower_components/angular/angular.js',
 					'static/bower_components/angularjs-ordinal-filter/ordinal.js',
 					'static/bower_components/angular-animate/angular-animate.js',
