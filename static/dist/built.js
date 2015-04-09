@@ -1,4 +1,7 @@
-/*! fitness-test - v1.0.0 - 2015-04-07 *//*!
+'use strict';
+
+// Source: app/bower_components/jquery/dist/jquery.js
+/*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
  *
@@ -9203,8 +9206,11 @@ if ( typeof noGlobal === strundefined ) {
 return jQuery;
 
 }));
-;/*!
- * Bootstrap v3.3.2 (http://getbootstrap.com)
+
+
+// Source: app/bower_components/bootstrap/dist/js/bootstrap.js
+/*!
+ * Bootstrap v3.3.4 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
@@ -9214,15 +9220,14 @@ if (typeof jQuery === 'undefined') {
 }
 
 +function ($) {
-  'use strict';
-  var version = $.fn.jquery.split(' ')[0].split('.')
+var version = $.fn.jquery.split(' ')[0].split('.')
   if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1)) {
     throw new Error('Bootstrap\'s JavaScript requires jQuery version 1.9.1 or higher')
   }
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: transition.js v3.3.2
+ * Bootstrap: transition.js v3.3.4
  * http://getbootstrap.com/javascript/#transitions
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -9231,9 +9236,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
-
-  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
+// CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
   // ============================================================
 
   function transitionEnd() {
@@ -9282,7 +9285,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: alert.js v3.3.2
+ * Bootstrap: alert.js v3.3.4
  * http://getbootstrap.com/javascript/#alerts
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -9291,9 +9294,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
-
-  // ALERT CLASS DEFINITION
+// ALERT CLASS DEFINITION
   // ======================
 
   var dismiss = '[data-dismiss="alert"]'
@@ -9301,7 +9302,7 @@ if (typeof jQuery === 'undefined') {
     $(el).on('click', dismiss, this.close)
   }
 
-  Alert.VERSION = '3.3.2'
+  Alert.VERSION = '3.3.4'
 
   Alert.TRANSITION_DURATION = 150
 
@@ -9377,7 +9378,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: button.js v3.3.2
+ * Bootstrap: button.js v3.3.4
  * http://getbootstrap.com/javascript/#buttons
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -9386,9 +9387,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
-
-  // BUTTON PUBLIC CLASS DEFINITION
+// BUTTON PUBLIC CLASS DEFINITION
   // ==============================
 
   var Button = function (element, options) {
@@ -9397,7 +9396,7 @@ if (typeof jQuery === 'undefined') {
     this.isLoading = false
   }
 
-  Button.VERSION  = '3.3.2'
+  Button.VERSION  = '3.3.4'
 
   Button.DEFAULTS = {
     loadingText: 'loading...'
@@ -9494,7 +9493,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: carousel.js v3.3.2
+ * Bootstrap: carousel.js v3.3.4
  * http://getbootstrap.com/javascript/#carousel
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -9503,19 +9502,17 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
-
-  // CAROUSEL CLASS DEFINITION
+// CAROUSEL CLASS DEFINITION
   // =========================
 
   var Carousel = function (element, options) {
     this.$element    = $(element)
     this.$indicators = this.$element.find('.carousel-indicators')
     this.options     = options
-    this.paused      =
-    this.sliding     =
-    this.interval    =
-    this.$active     =
+    this.paused      = null
+    this.sliding     = null
+    this.interval    = null
+    this.$active     = null
     this.$items      = null
 
     this.options.keyboard && this.$element.on('keydown.bs.carousel', $.proxy(this.keydown, this))
@@ -9525,7 +9522,7 @@ if (typeof jQuery === 'undefined') {
       .on('mouseleave.bs.carousel', $.proxy(this.cycle, this))
   }
 
-  Carousel.VERSION  = '3.3.2'
+  Carousel.VERSION  = '3.3.4'
 
   Carousel.TRANSITION_DURATION = 600
 
@@ -9732,7 +9729,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: collapse.js v3.3.2
+ * Bootstrap: collapse.js v3.3.4
  * http://getbootstrap.com/javascript/#collapse
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -9741,15 +9738,14 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
-
-  // COLLAPSE PUBLIC CLASS DEFINITION
+// COLLAPSE PUBLIC CLASS DEFINITION
   // ================================
 
   var Collapse = function (element, options) {
     this.$element      = $(element)
     this.options       = $.extend({}, Collapse.DEFAULTS, options)
-    this.$trigger      = $(this.options.trigger).filter('[href="#' + element.id + '"], [data-target="#' + element.id + '"]')
+    this.$trigger      = $('[data-toggle="collapse"][href="#' + element.id + '"],' +
+                           '[data-toggle="collapse"][data-target="#' + element.id + '"]')
     this.transitioning = null
 
     if (this.options.parent) {
@@ -9761,13 +9757,12 @@ if (typeof jQuery === 'undefined') {
     if (this.options.toggle) this.toggle()
   }
 
-  Collapse.VERSION  = '3.3.2'
+  Collapse.VERSION  = '3.3.4'
 
   Collapse.TRANSITION_DURATION = 350
 
   Collapse.DEFAULTS = {
-    toggle: true,
-    trigger: '[data-toggle="collapse"]'
+    toggle: true
   }
 
   Collapse.prototype.dimension = function () {
@@ -9905,7 +9900,7 @@ if (typeof jQuery === 'undefined') {
       var data    = $this.data('bs.collapse')
       var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
 
-      if (!data && options.toggle && option == 'show') options.toggle = false
+      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = false
       if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
       if (typeof option == 'string') data[option]()
     })
@@ -9936,7 +9931,7 @@ if (typeof jQuery === 'undefined') {
 
     var $target = getTargetFromTrigger($this)
     var data    = $target.data('bs.collapse')
-    var option  = data ? 'toggle' : $.extend({}, $this.data(), { trigger: this })
+    var option  = data ? 'toggle' : $this.data()
 
     Plugin.call($target, option)
   })
@@ -9944,7 +9939,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: dropdown.js v3.3.2
+ * Bootstrap: dropdown.js v3.3.4
  * http://getbootstrap.com/javascript/#dropdowns
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -9953,9 +9948,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
-
-  // DROPDOWN CLASS DEFINITION
+// DROPDOWN CLASS DEFINITION
   // =========================
 
   var backdrop = '.dropdown-backdrop'
@@ -9964,7 +9957,7 @@ if (typeof jQuery === 'undefined') {
     $(element).on('click.bs.dropdown', this.toggle)
   }
 
-  Dropdown.VERSION = '3.3.2'
+  Dropdown.VERSION = '3.3.4'
 
   Dropdown.prototype.toggle = function (e) {
     var $this = $(this)
@@ -10017,7 +10010,7 @@ if (typeof jQuery === 'undefined') {
       return $this.trigger('click')
     }
 
-    var desc = ' li:not(.divider):visible a'
+    var desc = ' li:not(.disabled):visible a'
     var $items = $parent.find('[role="menu"]' + desc + ', [role="listbox"]' + desc)
 
     if (!$items.length) return
@@ -10106,7 +10099,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: modal.js v3.3.2
+ * Bootstrap: modal.js v3.3.4
  * http://getbootstrap.com/javascript/#modals
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -10115,18 +10108,19 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
-
-  // MODAL CLASS DEFINITION
+// MODAL CLASS DEFINITION
   // ======================
 
   var Modal = function (element, options) {
-    this.options        = options
-    this.$body          = $(document.body)
-    this.$element       = $(element)
-    this.$backdrop      =
-    this.isShown        = null
-    this.scrollbarWidth = 0
+    this.options             = options
+    this.$body               = $(document.body)
+    this.$element            = $(element)
+    this.$dialog             = this.$element.find('.modal-dialog')
+    this.$backdrop           = null
+    this.isShown             = null
+    this.originalBodyPad     = null
+    this.scrollbarWidth      = 0
+    this.ignoreBackdropClick = false
 
     if (this.options.remote) {
       this.$element
@@ -10137,7 +10131,7 @@ if (typeof jQuery === 'undefined') {
     }
   }
 
-  Modal.VERSION  = '3.3.2'
+  Modal.VERSION  = '3.3.4'
 
   Modal.TRANSITION_DURATION = 300
   Modal.BACKDROP_TRANSITION_DURATION = 150
@@ -10171,6 +10165,12 @@ if (typeof jQuery === 'undefined') {
 
     this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
 
+    this.$dialog.on('mousedown.dismiss.bs.modal', function () {
+      that.$element.one('mouseup.dismiss.bs.modal', function (e) {
+        if ($(e.target).is(that.$element)) that.ignoreBackdropClick = true
+      })
+    })
+
     this.backdrop(function () {
       var transition = $.support.transition && that.$element.hasClass('fade')
 
@@ -10182,7 +10182,6 @@ if (typeof jQuery === 'undefined') {
         .show()
         .scrollTop(0)
 
-      if (that.options.backdrop) that.adjustBackdrop()
       that.adjustDialog()
 
       if (transition) {
@@ -10198,7 +10197,7 @@ if (typeof jQuery === 'undefined') {
       var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
 
       transition ?
-        that.$element.find('.modal-dialog') // wait for modal to slide in
+        that.$dialog // wait for modal to slide in
           .one('bsTransitionEnd', function () {
             that.$element.trigger('focus').trigger(e)
           })
@@ -10227,6 +10226,9 @@ if (typeof jQuery === 'undefined') {
       .removeClass('in')
       .attr('aria-hidden', true)
       .off('click.dismiss.bs.modal')
+      .off('mouseup.dismiss.bs.modal')
+
+    this.$dialog.off('mousedown.dismiss.bs.modal')
 
     $.support.transition && this.$element.hasClass('fade') ?
       this.$element
@@ -10287,13 +10289,18 @@ if (typeof jQuery === 'undefined') {
       var doAnimate = $.support.transition && animate
 
       this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
-        .prependTo(this.$element)
-        .on('click.dismiss.bs.modal', $.proxy(function (e) {
-          if (e.target !== e.currentTarget) return
-          this.options.backdrop == 'static'
-            ? this.$element[0].focus.call(this.$element[0])
-            : this.hide.call(this)
-        }, this))
+        .appendTo(this.$body)
+
+      this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
+        if (this.ignoreBackdropClick) {
+          this.ignoreBackdropClick = false
+          return
+        }
+        if (e.target !== e.currentTarget) return
+        this.options.backdrop == 'static'
+          ? this.$element[0].focus()
+          : this.hide()
+      }, this))
 
       if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
 
@@ -10328,14 +10335,7 @@ if (typeof jQuery === 'undefined') {
   // these following methods are used to handle overflowing modals
 
   Modal.prototype.handleUpdate = function () {
-    if (this.options.backdrop) this.adjustBackdrop()
     this.adjustDialog()
-  }
-
-  Modal.prototype.adjustBackdrop = function () {
-    this.$backdrop
-      .css('height', 0)
-      .css('height', this.$element[0].scrollHeight)
   }
 
   Modal.prototype.adjustDialog = function () {
@@ -10355,17 +10355,23 @@ if (typeof jQuery === 'undefined') {
   }
 
   Modal.prototype.checkScrollbar = function () {
-    this.bodyIsOverflowing = document.body.scrollHeight > document.documentElement.clientHeight
+    var fullWindowWidth = window.innerWidth
+    if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
+      var documentElementRect = document.documentElement.getBoundingClientRect()
+      fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left)
+    }
+    this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth
     this.scrollbarWidth = this.measureScrollbar()
   }
 
   Modal.prototype.setScrollbar = function () {
     var bodyPad = parseInt((this.$body.css('padding-right') || 0), 10)
+    this.originalBodyPad = document.body.style.paddingRight || ''
     if (this.bodyIsOverflowing) this.$body.css('padding-right', bodyPad + this.scrollbarWidth)
   }
 
   Modal.prototype.resetScrollbar = function () {
-    this.$body.css('padding-right', '')
+    this.$body.css('padding-right', this.originalBodyPad)
   }
 
   Modal.prototype.measureScrollbar = function () { // thx walsh
@@ -10431,7 +10437,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: tooltip.js v3.3.2
+ * Bootstrap: tooltip.js v3.3.4
  * http://getbootstrap.com/javascript/#tooltip
  * Inspired by the original jQuery.tipsy by Jason Frame
  * ========================================================================
@@ -10441,23 +10447,21 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
-
-  // TOOLTIP PUBLIC CLASS DEFINITION
+// TOOLTIP PUBLIC CLASS DEFINITION
   // ===============================
 
   var Tooltip = function (element, options) {
-    this.type       =
-    this.options    =
-    this.enabled    =
-    this.timeout    =
-    this.hoverState =
+    this.type       = null
+    this.options    = null
+    this.enabled    = null
+    this.timeout    = null
+    this.hoverState = null
     this.$element   = null
 
     this.init('tooltip', element, options)
   }
 
-  Tooltip.VERSION  = '3.3.2'
+  Tooltip.VERSION  = '3.3.4'
 
   Tooltip.TRANSITION_DURATION = 150
 
@@ -10483,6 +10487,10 @@ if (typeof jQuery === 'undefined') {
     this.$element  = $(element)
     this.options   = this.getOptions(options)
     this.$viewport = this.options.viewport && $(this.options.viewport.selector || this.options.viewport)
+
+    if (this.$element[0] instanceof document.constructor && !this.options.selector) {
+      throw new Error('`selector` option must be specified when initializing ' + this.type + ' on the window.document object!')
+    }
 
     var triggers = this.options.trigger.split(' ')
 
@@ -10704,10 +10712,10 @@ if (typeof jQuery === 'undefined') {
     this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical)
   }
 
-  Tooltip.prototype.replaceArrow = function (delta, dimension, isHorizontal) {
+  Tooltip.prototype.replaceArrow = function (delta, dimension, isVertical) {
     this.arrow()
-      .css(isHorizontal ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
-      .css(isHorizontal ? 'top' : 'left', '')
+      .css(isVertical ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
+      .css(isVertical ? 'top' : 'left', '')
   }
 
   Tooltip.prototype.setContent = function () {
@@ -10720,7 +10728,7 @@ if (typeof jQuery === 'undefined') {
 
   Tooltip.prototype.hide = function (callback) {
     var that = this
-    var $tip = this.tip()
+    var $tip = $(this.$tip)
     var e    = $.Event('hide.bs.' + this.type)
 
     function complete() {
@@ -10737,7 +10745,7 @@ if (typeof jQuery === 'undefined') {
 
     $tip.removeClass('in')
 
-    $.support.transition && this.$tip.hasClass('fade') ?
+    $.support.transition && $tip.hasClass('fade') ?
       $tip
         .one('bsTransitionEnd', complete)
         .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
@@ -10881,7 +10889,7 @@ if (typeof jQuery === 'undefined') {
       var data    = $this.data('bs.tooltip')
       var options = typeof option == 'object' && option
 
-      if (!data && option == 'destroy') return
+      if (!data && /destroy|hide/.test(option)) return
       if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
       if (typeof option == 'string') data[option]()
     })
@@ -10904,7 +10912,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: popover.js v3.3.2
+ * Bootstrap: popover.js v3.3.4
  * http://getbootstrap.com/javascript/#popovers
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -10913,9 +10921,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
-
-  // POPOVER PUBLIC CLASS DEFINITION
+// POPOVER PUBLIC CLASS DEFINITION
   // ===============================
 
   var Popover = function (element, options) {
@@ -10924,7 +10930,7 @@ if (typeof jQuery === 'undefined') {
 
   if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
 
-  Popover.VERSION  = '3.3.2'
+  Popover.VERSION  = '3.3.4'
 
   Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
     placement: 'right',
@@ -10980,11 +10986,6 @@ if (typeof jQuery === 'undefined') {
     return (this.$arrow = this.$arrow || this.tip().find('.arrow'))
   }
 
-  Popover.prototype.tip = function () {
-    if (!this.$tip) this.$tip = $(this.options.template)
-    return this.$tip
-  }
-
 
   // POPOVER PLUGIN DEFINITION
   // =========================
@@ -10995,7 +10996,7 @@ if (typeof jQuery === 'undefined') {
       var data    = $this.data('bs.popover')
       var options = typeof option == 'object' && option
 
-      if (!data && option == 'destroy') return
+      if (!data && /destroy|hide/.test(option)) return
       if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
       if (typeof option == 'string') data[option]()
     })
@@ -11018,7 +11019,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: scrollspy.js v3.3.2
+ * Bootstrap: scrollspy.js v3.3.4
  * http://getbootstrap.com/javascript/#scrollspy
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -11027,16 +11028,12 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
-
-  // SCROLLSPY CLASS DEFINITION
+// SCROLLSPY CLASS DEFINITION
   // ==========================
 
   function ScrollSpy(element, options) {
-    var process  = $.proxy(this.process, this)
-
-    this.$body          = $('body')
-    this.$scrollElement = $(element).is('body') ? $(window) : $(element)
+    this.$body          = $(document.body)
+    this.$scrollElement = $(element).is(document.body) ? $(window) : $(element)
     this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
     this.selector       = (this.options.target || '') + ' .nav li > a'
     this.offsets        = []
@@ -11044,12 +11041,12 @@ if (typeof jQuery === 'undefined') {
     this.activeTarget   = null
     this.scrollHeight   = 0
 
-    this.$scrollElement.on('scroll.bs.scrollspy', process)
+    this.$scrollElement.on('scroll.bs.scrollspy', $.proxy(this.process, this))
     this.refresh()
     this.process()
   }
 
-  ScrollSpy.VERSION  = '3.3.2'
+  ScrollSpy.VERSION  = '3.3.4'
 
   ScrollSpy.DEFAULTS = {
     offset: 10
@@ -11060,19 +11057,18 @@ if (typeof jQuery === 'undefined') {
   }
 
   ScrollSpy.prototype.refresh = function () {
-    var offsetMethod = 'offset'
-    var offsetBase   = 0
+    var that          = this
+    var offsetMethod  = 'offset'
+    var offsetBase    = 0
+
+    this.offsets      = []
+    this.targets      = []
+    this.scrollHeight = this.getScrollHeight()
 
     if (!$.isWindow(this.$scrollElement[0])) {
       offsetMethod = 'position'
       offsetBase   = this.$scrollElement.scrollTop()
     }
-
-    this.offsets = []
-    this.targets = []
-    this.scrollHeight = this.getScrollHeight()
-
-    var self     = this
 
     this.$body
       .find(this.selector)
@@ -11088,8 +11084,8 @@ if (typeof jQuery === 'undefined') {
       })
       .sort(function (a, b) { return a[0] - b[0] })
       .each(function () {
-        self.offsets.push(this[0])
-        self.targets.push(this[1])
+        that.offsets.push(this[0])
+        that.targets.push(this[1])
       })
   }
 
@@ -11118,7 +11114,7 @@ if (typeof jQuery === 'undefined') {
     for (i = offsets.length; i--;) {
       activeTarget != targets[i]
         && scrollTop >= offsets[i]
-        && (!offsets[i + 1] || scrollTop <= offsets[i + 1])
+        && (offsets[i + 1] === undefined || scrollTop < offsets[i + 1])
         && this.activate(targets[i])
     }
   }
@@ -11129,8 +11125,8 @@ if (typeof jQuery === 'undefined') {
     this.clear()
 
     var selector = this.selector +
-        '[data-target="' + target + '"],' +
-        this.selector + '[href="' + target + '"]'
+      '[data-target="' + target + '"],' +
+      this.selector + '[href="' + target + '"]'
 
     var active = $(selector)
       .parents('li')
@@ -11194,7 +11190,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: tab.js v3.3.2
+ * Bootstrap: tab.js v3.3.4
  * http://getbootstrap.com/javascript/#tabs
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -11203,16 +11199,14 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
-
-  // TAB CLASS DEFINITION
+// TAB CLASS DEFINITION
   // ====================
 
   var Tab = function (element) {
     this.element = $(element)
   }
 
-  Tab.VERSION = '3.3.2'
+  Tab.VERSION = '3.3.4'
 
   Tab.TRANSITION_DURATION = 150
 
@@ -11283,7 +11277,7 @@ if (typeof jQuery === 'undefined') {
         element.removeClass('fade')
       }
 
-      if (element.parent('.dropdown-menu')) {
+      if (element.parent('.dropdown-menu').length) {
         element
           .closest('li.dropdown')
             .addClass('active')
@@ -11348,7 +11342,7 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: affix.js v3.3.2
+ * Bootstrap: affix.js v3.3.4
  * http://getbootstrap.com/javascript/#affix
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -11357,9 +11351,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
-
-  // AFFIX CLASS DEFINITION
+// AFFIX CLASS DEFINITION
   // ======================
 
   var Affix = function (element, options) {
@@ -11370,14 +11362,14 @@ if (typeof jQuery === 'undefined') {
       .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
 
     this.$element     = $(element)
-    this.affixed      =
-    this.unpin        =
+    this.affixed      = null
+    this.unpin        = null
     this.pinnedOffset = null
 
     this.checkPosition()
   }
 
-  Affix.VERSION  = '3.3.2'
+  Affix.VERSION  = '3.3.4'
 
   Affix.RESET    = 'affix affix-top affix-bottom'
 
@@ -11427,7 +11419,7 @@ if (typeof jQuery === 'undefined') {
     var offset       = this.options.offset
     var offsetTop    = offset.top
     var offsetBottom = offset.bottom
-    var scrollHeight = $('body').height()
+    var scrollHeight = $(document.body).height()
 
     if (typeof offset != 'object')         offsetBottom = offsetTop = offset
     if (typeof offsetTop == 'function')    offsetTop    = offset.top(this.$element)
@@ -11509,7 +11501,15 @@ if (typeof jQuery === 'undefined') {
   })
 
 }(jQuery);
-;(function(window, document, undefined) {'use strict';
+
+
+// Source: app/bower_components/angular/angular.js
+/**
+ * @license AngularJS v1.3.15
+ * (c) 2010-2014 Google, Inc. http://angularjs.org
+ * License: MIT
+ */
+(function(window, document, undefined) {'use strict';
 
 /**
  * @description
@@ -37812,7 +37812,15 @@ var minlengthDirective = function() {
 
 })(window, document);
 
-!window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');;(function(window, angular, undefined) {'use strict';
+!window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
+
+// Source: app/bower_components/angular-route/angular-route.js
+/**
+ * @license AngularJS v1.3.15
+ * (c) 2010-2014 Google, Inc. http://angularjs.org
+ * License: MIT
+ */
+(function(window, angular, undefined) {'use strict';
 
 /**
  * @ngdoc module
@@ -38796,8 +38804,9 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 
 })(window, window.angular);
-;'use strict';
 
+
+// Source: app/bower_components/angularjs-ordinal-filter/ordinal.js
 // Ordinal Number Filter
 // ---------------------
 // This filter takes a number and returns its ordinal value
@@ -38817,7 +38826,15 @@ angular.module('ordinal', []).filter('ordinal', function() {
 
   return ordinal;
 });
-;(function(window, angular, undefined) {'use strict';
+
+
+// Source: app/bower_components/angular-animate/angular-animate.js
+/**
+ * @license AngularJS v1.3.15
+ * (c) 2010-2014 Google, Inc. http://angularjs.org
+ * License: MIT
+ */
+(function(window, angular, undefined) {'use strict';
 
 /* jshint maxlen: false */
 
@@ -40949,7 +40966,10 @@ angular.module('ngAnimate', ['ng'])
 
 
 })(window, window.angular);
-;/*! 
+
+
+// Source: app/bower_components/angular-loading-bar/build/loading-bar.js
+/*! 
  * angular-loading-bar v0.7.1
  * https://chieffancypants.github.io/angular-loading-bar
  * Copyright (c) 2015 Wes Cruver
@@ -40967,8 +40987,6 @@ angular.module('ngAnimate', ['ng'])
 
 
 (function() {
-
-'use strict';
 
 // Alias the loading bar for various backwards compatibilities since the project has matured:
 angular.module('angular-loading-bar', ['cfp.loadingBarInterceptor']);
@@ -41273,159 +41291,38 @@ angular.module('cfp.loadingBar', [])
     }];     //
   });       // wtf javascript. srsly
 })();       //
-;var app = angular.module('fitnessApp', ['ngRoute', 'ordinal', 'angular-loading-bar', 'ngAnimate']);
 
-app.config(['$routeProvider', function($routeProvider) {
-	$routeProvider
-		.when('/', {
-			templateUrl: 'static/templates/index.html',
-			controller: 'IndexController'
-		})
-		.when('/week/:week_id', {
-			templateUrl: 'static/templates/week.html',
-			controller: 'WeekController',
-			resolve: {
-				weeksPromise: ['$route', 'srvWeeks', function($route, srvWeeks) {
-					var week_id = $route.current.params.week_id;
-					var weekFactory = new srvWeeks();
-					return weekFactory.find(week_id);
-				}]
-			}
-		})
-		.when('/athlete/:athlete_id', {
-			templateUrl: 'static/templates/athlete.html',
-			controller: 'AthleteController',
-			resolve: {
-				athletePromise: ['$route', 'srvAthlete', function($route, srvAthlete) {
-					var athlete_id = $route.current.params.athlete_id;
-					var athleteFactory = new srvAthlete();
-					return athleteFactory.find(athlete_id);
-				}]
-			}
-		})
-		.otherwise({ templateUrl: 'static/templates/404.html' });
+
+// Source: app/app.js
+var app = angular.module('fitnessApp', [
+	'ngRoute',
+	'ordinal',
+	'angular-loading-bar',
+	'ngAnimate',
+
+	'fitnessApp.home',
+	'fitnessApp.week',
+	'fitnessApp.athlete',
+	'fitnessApp.navigation',
+
+	'fitnessApp.weekService',
+	'fitnessApp.athleteService',
+	'fitnessApp.categoriesService',
+
+	'fitnessApp.categorySelectorDirective',
+	'fitnessApp.htmlService'
+])
+.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+	cfpLoadingBarProvider.includeSpinner = false;
+}])
+.config(['$routeProvider', function($routeProvider) {
+	$routeProvider.otherwise({ templateUrl: 'static/app/templates/404.html' });
 }]);
 
-app.controller('IndexController', ['$scope', '$http', 'srvWeeks', function($scope, $http, srvWeeks) {
-	var weeksFactory = new srvWeeks();
+// Source: app/athlete/athlete-service.js
+angular.module('fitnessApp.athleteService', [])
 
-	weeksFactory.all().then(function() {
-		$scope.weeks = weeksFactory.weeks;
-	});
-}]);
-
-app.controller('NavigationBarController', ['$scope', '$http', 'srvWeeks', 'srvAthlete', function($scope, $http, srvWeeks, srvAthlete) {
-	var athleteFactory = new srvAthlete();
-
-	athleteFactory.all().then(function() {
-		$scope.athletes = athleteFactory.athletes;
-	});
-
-	var weeksFactory = new srvWeeks();
-
-	weeksFactory.all().then(function() {
-		$scope.weeks = weeksFactory.weeks;
-	});
-}]);
-
-app.controller('WeekController', ['$scope', '$http', '$routeParams', '$sce', 'categories', 'html', 'weeks', 'weeksPromise', function($scope, $http, $routeParams, $sce, categories, html, weeks, weeksPromise) {
-	$scope.category = 'Overall Ranking';
-
-	$scope.week = weeksPromise.data;
-
-	$scope.$watch('category', function() {
-		$scope.changeCategory();
-	});
-
-	$scope.changeCategory = function() {
-		var url;
-
-		if ($scope.week) {
-
-			$http.get('/api/week/' + $scope.week.id + '?category=' + $scope.category).then(function(data) {
-				$scope.results = data.data;
-			});
-
-			$http.get('/api/week/' + $scope.week.id + '/graph?category=' + $scope.category).then(function(data) {
-				$scope.graph = data.data;
-			});
-		}
-	};
-
-	$scope.renderHtml = html.render;
-}]);
-
-app.controller('AthleteController', ['$scope', '$http', '$log', '$sce', 'categories', 'html', 'athletePromise', function($scope, $http, $log, $sce, categories, html, athletePromise) {
-	$scope.category = 'Overall';
-
-	$scope.athlete = athletePromise.data;
-
-	$scope.$watch('category', function() {
-		$scope.changeCategory();
-	});
-
-	$scope.changeCategory = function() {
-		var url;
-
-		$http.get('/api/athletes/' + $scope.athlete.usag_id + '/stats?category=' + $scope.category).then(function(data) {
-			$scope.results = data.data;
-		});
-
-		$http.get('/api/athletes/' + $scope.athlete.usag_id + '/graph?category=' + $scope.category).then(function(data) {
-			$scope.graph = data.data;
-		});
-	};
-
-	$scope.renderHtml = html.render;
-
-}]);
-
-app.directive('categorySelector', function() {
-	return {
-		restrict: 'E',
-		replace: true,
-		transclude: true,
-		scope: {
-			week: '='
-		},
-		controller: ['$scope', 'categories', function($scope, categories) {
-			categories.retrieve($scope.week).then(function(data) {
-				$scope.categories = data.data;
-			});
-		}],
-		template: '<select class="form-control" ng-options="item for item in categories"><option value="">Overall</option></select>',
-		link: function(scope, element, attrs) {}
-	}
-});
-
-app.factory('srvWeeks', ['$http', function($http) {
-	var WeekService = function() {
-		this.week = null;
-		this.weeks = null;
-	};
-
-	WeekService.prototype.all = function() {
-		var self = this;
-
-		return $http.get('/api/weeks').then(function(response) {
-			self.weeks = response.data;
-			return response;
-		});
-	};
-
-	WeekService.prototype.find = function(week_id) {
-		var self = this;
-
-		return $http.get('/api/weeks/' + week_id).then(function(response) {
-			self.week = response.data;
-			return response;
-		})
-	};
-
-	return WeekService;
-}]);
-
-app.factory('srvAthlete', ['$http', function($http) {
+.factory('srvAthlete', ['$http', function($http) {
 
 	var AthleteService = function() {
 		this.athlete = null;
@@ -41453,34 +41350,208 @@ app.factory('srvAthlete', ['$http', function($http) {
 	return AthleteService;
 }]);
 
-app.service('weeks', ['$http', function($http) {
-	this.retrieve = function() {
-		return $http.get('/api/weeks');
-	};
+// Source: app/athlete/athlete.js
+angular.module('fitnessApp.athlete', ['ngRoute'])
+
+.config(['$routeProvider', function($routeProvider) {
+	$routeProvider.when('/athlete/:athlete_id', {
+		templateUrl: 'static/app/templates/athlete.html',
+		controller: 'AthleteController',
+		resolve: {
+			athleteResponse: ['$route', 'srvAthlete', function($route, srvAthlete) {
+				var athlete_id = $route.current.params.athlete_id;
+				var athleteFactory = new srvAthlete();
+				return athleteFactory.find(athlete_id);
+			}]
+		}
+	});
 }])
 
-app.service('html', ['$sce', function($sce) {
+.controller('AthleteController', ['$scope', '$http', '$log', '$sce', 'html', 'athleteResponse', function($scope, $http, $log, $sce, html, athleteResponse) {
+	$scope.category = 'Overall';
+
+	$scope.athlete = athleteResponse.data;
+
+	$scope.$watch('category', function() {
+		$scope.changeCategory();
+	});
+
+	$scope.changeCategory = function() {
+		var url;
+
+		$http.get('/api/athletes/' + $scope.athlete.usag_id + '/stats?category=' + $scope.category).then(function(data) {
+			$scope.results = data.data;
+		});
+
+		$http.get('/api/athletes/' + $scope.athlete.usag_id + '/graph?category=' + $scope.category).then(function(data) {
+			$scope.graph = data.data;
+		});
+	};
+
+	$scope.renderHtml = html.render;
+
+}]);
+
+// Source: app/home/home.js
+angular.module('fitnessApp.home', ['ngRoute'])
+
+.config(['$routeProvider', function($routeProvider) {
+	$routeProvider.when('/', {
+		templateUrl: 'static/app/templates/home.html',
+		controller: 'HomeController'
+	});
+}])
+
+.controller('HomeController', ['$scope', '$http', 'srvWeeks', function($scope, $http, srvWeeks) {
+	var weeksFactory = new srvWeeks();
+
+	weeksFactory.all().then(function() {
+		$scope.weeks = weeksFactory.weeks;
+	});
+}]);
+
+// Source: app/navigation/navigation.js
+angular.module('fitnessApp.navigation', [])
+
+.controller('NavigationBarController', ['$scope', '$http', 'srvWeeks', 'srvAthlete', function($scope, $http, srvWeeks, srvAthlete) {
+	var athleteFactory = new srvAthlete();
+
+	athleteFactory.all().then(function() {
+		$scope.athletes = athleteFactory.athletes;
+	});
+
+	var weeksFactory = new srvWeeks();
+
+	weeksFactory.all().then(function() {
+		$scope.weeks = weeksFactory.weeks;
+	});
+}]);
+
+// Source: app/shared/categories-service.js
+angular.module('fitnessApp.categoriesService', [])
+
+.factory('srvCategories', ['$http', function($http) {
+
+	return {
+		retrieve: function(week) {
+			var url = '/api/categories';
+
+			if (week) {
+				url += '?week=' + week;
+			}
+
+			return $http.get(url);
+		}
+	}
+
+}]);
+
+// Source: app/shared/category-selector-directive.js
+angular.module('fitnessApp.categorySelectorDirective', [])
+
+.directive('categorySelector', function() {
+	return {
+		restrict: 'E',
+		
+		replace: true,
+		
+		transclude: true,
+		
+		scope: {
+			week: '='
+		},
+
+		controller: ['$scope', 'srvCategories', function($scope, srvCategories) {
+			srvCategories.retrieve($scope.week).then(function(response) {
+				$scope.categories = response.data;
+			});
+		}],
+
+		template: '<select class="form-control" ng-options="item for item in categories"><option value="">Overall</option></select>',
+		
+		link: function(scope, element, attrs) {}
+	}
+});
+
+// Source: app/shared/html-service.js
+angular.module('fitnessApp.htmlService', [])
+
+.service('html', ['$sce', function($sce) {
 	this.render = function(html) {
 		return $sce.trustAsHtml(html);
 	};
 }]);
 
-app.service('categories', ['$http', function($http) {
-	this.retrieve = function(week) {
-		var url = '/api/categories';
-		if (week) {
-			url += '?week=' + week;
-		}
+// Source: app/week/week-service.js
+angular.module('fitnessApp.weekService', [])
 
-		return $http.get(url);
+.factory('srvWeeks', ['$http', function($http) {
+	var WeekService = function() {
+		this.week = null;
+		this.weeks = null;
 	};
+
+	WeekService.prototype.all = function() {
+		var self = this;
+
+		return $http.get('/api/weeks').then(function(response) {
+			self.weeks = response.data;
+			return response;
+		});
+	};
+
+	WeekService.prototype.find = function(week_id) {
+		var self = this;
+
+		return $http.get('/api/weeks/' + week_id).then(function(response) {
+			self.week = response.data;
+			return response;
+		})
+	};
+
+	return WeekService;
 }]);
 
-app.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
-	cfpLoadingBarProvider.includeSpinner = false;
-}]);
+// Source: app/week/week.js
+angular.module('fitnessApp.week', ['ngRoute'])
 
-// app.config(function($interpolateProvider) {
-// 	$interpolateProvider.startSymbol('<<');
-// 	$interpolateProvider.endSymbol('>>');
-// });
+.config(['$routeProvider', function($routeProvider) {
+	$routeProvider.when('/week/:week_id', {
+		templateUrl: 'static/app/templates/week.html',
+		controller: 'WeekController',
+		resolve: {
+			weeksPromise: ['$route', 'srvWeeks', function($route, srvWeeks) {
+				var week_id = $route.current.params.week_id;
+				var weekFactory = new srvWeeks();
+				return weekFactory.find(week_id);
+			}]
+		}
+	});
+}])
+
+.controller('WeekController', ['$scope', '$http', '$routeParams', '$sce', 'html', 'weeksPromise', function($scope, $http, $routeParams, $sce, html, weeksPromise) {
+	$scope.category = 'Overall Ranking';
+
+	$scope.week = weeksPromise.data;
+
+	$scope.$watch('category', function() {
+		$scope.changeCategory();
+	});
+
+	$scope.changeCategory = function() {
+		var url;
+
+		if ($scope.week) {
+
+			$http.get('/api/week/' + $scope.week.id + '?category=' + $scope.category).then(function(data) {
+				$scope.results = data.data;
+			});
+
+			$http.get('/api/week/' + $scope.week.id + '/graph?category=' + $scope.category).then(function(data) {
+				$scope.graph = data.data;
+			});
+		}
+	};
+
+	$scope.renderHtml = html.render;
+}]);

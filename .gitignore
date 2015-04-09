@@ -2,6 +2,7 @@
 **/*.pyc
 ./*.pyc
 app.db
+storage
 
 env
 bower_components
