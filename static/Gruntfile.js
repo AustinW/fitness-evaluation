@@ -25,6 +25,8 @@ module.exports = function(grunt) {
 					'app/bower_components/angularjs-ordinal-filter/ordinal.js',
 					'app/bower_components/angular-animate/angular-animate.js',
 					'app/bower_components/angular-loading-bar/build/loading-bar.js',
+					'app/bower_components/angular-sweetalert/SweetAlert.js',
+					'app/bower_components/sweetalert/lib/sweet-alert.js',
 					
 					'app/app.js',
 					'app/athlete/*.js',

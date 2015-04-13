@@ -25,18 +25,23 @@ from oauth2client.client import flow_from_clientsecrets
 storage = Storage(app.config['GOOGLE_OAUTH_AUTHORIZED_CREDENTIALS'])
 
 @app.route('/')
+@app.cache.cached(app.config['CACHE_TIME'])
 def index():
 	try:
-		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'], app.config['ATHLETE_DB_PATH'])
-		worksheets = mainSheet.weeks()
-
 		return render_template('layout.html')
 	
 	except Exception as e:
 		return render_template('error.html', message=e.message)
 
+@app.route('/api/clear-cache')
+def clear_cache():
+	app.cache.clear()
+
+	return Response(json.dumps({"message": "Cache cleared successfully"}), mimetype='application/json')
+
 @app.route('/api/weeks', defaults={'week_id': None})
 @app.route('/api/weeks/<week_id>')
+@app.cache.memoize(app.config['CACHE_TIME'])
 def list_weeks(week_id):
 	try:
 		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'], app.config['ATHLETE_DB_PATH'])
@@ -61,6 +66,7 @@ def list_weeks(week_id):
 
 @app.route('/api/athletes', defaults = {'usag_id': None})
 @app.route('/api/athletes/<usag_id>')
+@app.cache.memoize(app.config['CACHE_TIME'])
 def athlete_info(usag_id):
 	try:
 		# Get main Google Sheet
@@ -86,6 +92,7 @@ def athlete_info(usag_id):
 
 @app.route('/api/week/<worksheet_id>', defaults = {'show': 'json'})
 @app.route('/api/week/<worksheet_id>/graph', defaults = {'show': 'graph'})
+@app.cache.memoize(app.config['CACHE_TIME'])
 def week_stats(worksheet_id, show):
 	try:
 		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'], app.config['ATHLETE_DB_PATH'])
@@ -124,6 +131,7 @@ def week_stats(worksheet_id, show):
 
 @app.route('/api/athletes/<usag_id>/stats', defaults={'show': 'json'})
 @app.route('/api/athletes/<usag_id>/graph', defaults={'show': 'graph'})
+@app.cache.memoize(app.config['CACHE_TIME'])
 def athlete_stats(usag_id, show):
 	try:
 		# Get main Google Sheet
@@ -179,6 +187,7 @@ def athlete_stats(usag_id, show):
 		return response
 
 @app.route('/api/categories')
+@app.cache.memoize(app.config['CACHE_TIME'])
 def categories():
 	try:
 		# Get main Google Sheet

@@ -3,6 +3,7 @@ var app = angular.module('fitnessApp', [
 	'ordinal',
 	'angular-loading-bar',
 	'ngAnimate',
+	'oitozero.ngSweetAlert',
 
 	'fitnessApp.home',
 	'fitnessApp.week',

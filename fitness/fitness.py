@@ -59,22 +59,27 @@ class Fitness:
 
 		:return: :raise Exception:
 		"""
-		client = Client(auth=None)
+		try:
+			client = Client(auth=None)
 
-		spreadsheet = Fitness.spreadsheet_fake(client, self.spreadsheet_id)
+			spreadsheet = Fitness.spreadsheet_fake(client, self.spreadsheet_id)
 
-		url = construct_url('worksheets', spreadsheet_id=self.spreadsheet_id, visibility='public', projection='full')
-		session = HTTPSession()
-		r = session.get(url)
+			url = construct_url('worksheets', spreadsheet_id=self.spreadsheet_id, visibility='public', projection='full')
+			session = HTTPSession()
+			r = session.get(url)
 
-		worksheet_tree = ElementTree.fromstring(r.read())
+			worksheet_tree = ElementTree.fromstring(r.read())
 
-		worksheets = []
+			worksheets = []
 
-		for elem in worksheet_tree.findall(_ns('entry')):
-			worksheets.append(Worksheet(spreadsheet, elem))
+			for elem in worksheet_tree.findall(_ns('entry')):
+				worksheets.append(Worksheet(spreadsheet, elem))
 
-		return worksheets
+			return worksheets
+
+		except Exception as e:
+
+			raise Exception("Problem reading the spreadsheet from Google Sheets API.")
 
 	def week(self, id):
 		"""
@@ -205,23 +210,27 @@ class Fitness:
 
 	@staticmethod
 	def spreadsheet_fake(client, spreadsheet_id):
-		with open ("spreadsheet.xml", "r") as spreadsheet_makeshift:
-			feed = ElementTree.fromstring(spreadsheet_makeshift.read())
+		try:
+			with open ("spreadsheet.xml", "r") as spreadsheet_makeshift:
+				feed = ElementTree.fromstring(spreadsheet_makeshift.read())
 
-			for elem in feed.findall(_ns('entry')):
-				alter_link = finditem(lambda x: x.get('rel') == 'alternate',
-									  elem.findall(_ns('link')))
-				m = _url_key_re_v1.search(alter_link.get('href'))
-				if m and m.group(1) == spreadsheet_id:
-					return Spreadsheet(client, elem)
+				for elem in feed.findall(_ns('entry')):
+					alter_link = finditem(lambda x: x.get('rel') == 'alternate',
+										  elem.findall(_ns('link')))
+					m = _url_key_re_v1.search(alter_link.get('href'))
+					if m and m.group(1) == spreadsheet_id:
+						return Spreadsheet(client, elem)
 
-				m = _url_key_re_v2.search(alter_link.get('href'))
+					m = _url_key_re_v2.search(alter_link.get('href'))
 
-				if m and m.group(1) == spreadsheet_id:
-					return Spreadsheet(client, elem)
+					if m and m.group(1) == spreadsheet_id:
+						return Spreadsheet(client, elem)
 
-			else:
-				raise Exception("Could not open spreadsheet")
+				else:
+					raise Exception("Could not open spreadsheet")
+
+		except Exception as e:
+			raise Exception("Problem reading the spreadsheet from Google Sheets API.")
 
 	@staticmethod
 	def safe_convert(data, func):

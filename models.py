@@ -1,4 +1,5 @@
 from fitness.ranking import Ranking
+
 class Athlete:
 
 	def __init__(self, first_name, last_name, gender, usag_id, dob, tra=None, dmt=None, tum=None, syn=None):
@@ -35,7 +36,7 @@ class Athlete:
 		return self.week_rankings
 
 	def __repr__(self):
-		return '<Athlete %r>' % (self.name)
+		return "<%s (%s: %s)" % (self.__class__.__name__, self.name, self.usag_id)
 
 	def __unicode__(self):
 		return self.name
