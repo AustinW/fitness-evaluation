@@ -3,20 +3,10 @@
 <head>
 	<title>World Elite Fitness Evaluation</title>
 
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
-	<!-- Loading Bar -->
-	<link rel="stylesheet" href="/static/app/bower_components/angular-loading-bar/build/loading-bar.min.css">
-	
-	<!-- Sweet Alert -->
-	<link rel="stylesheet" href="/static/app/bower_components/sweetalert/lib/sweet-alert.css">
+	<link rel="stylesheet" href="{{ url_for('static', filename='dist/css/built.min.css') }}">
 
 	<style>
 	.error-display {
@@ -100,11 +90,12 @@
 				<a href="http://www.facebook.com/austingym" target="_blank"><i class="fa fa-facebook-square"></i></a>
 				<a href="http://www.instagram.com/austingym" target="_blank"><i class="fa fa-instagram"></i></a>
 				<a href="http://www.twitter.com/austingym" target="_blank"><i class="fa fa-twitter-square"></i></a>
+				<a href="http://www.github.com/austinw" target="_blank"><i class="fa fa-github-square"></i></a>
 			</div>
 		</div>
 	</div>
 
-	<script type="text/javascript" src="/static/dist/built.min.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='dist/js/built.min.js') }}"></script>
 	
 </body>
 </html>

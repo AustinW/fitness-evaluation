@@ -4,6 +4,13 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 
+		app: 'app',
+		dist: 'dist',
+
+		js_build_path: '<%= dist %>/js',
+		css_build_path: '<%= dist %>/css',
+		bower: '<%= app %>/bower_components',
+
 		concat: {
 			options: {
 				stripBanners: true,
@@ -16,30 +23,39 @@ module.exports = function(grunt) {
 					src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
 				}
 			},
-			dist: {
+			js: {
 				src: [
-					'app/bower_components/jquery/dist/jquery.js',
-					'app/bower_components/bootstrap/dist/js/bootstrap.js',
-					'app/bower_components/angular/angular.js',
-					'app/bower_components/angular-route/angular-route.js',
-					'app/bower_components/angularjs-ordinal-filter/ordinal.js',
-					'app/bower_components/angular-animate/angular-animate.js',
-					'app/bower_components/angular-loading-bar/build/loading-bar.js',
-					'app/bower_components/angular-sweetalert/SweetAlert.js',
-					'app/bower_components/sweetalert/lib/sweet-alert.js',
+					'<%= bower %>/jquery/dist/jquery.js',
+					'<%= bower %>/bootstrap/dist/js/bootstrap.js',
+					'<%= bower %>/angular/angular.js',
+					'<%= bower %>/angular-route/angular-route.js',
+					'<%= bower %>/angularjs-ordinal-filter/ordinal.js',
+					'<%= bower %>/angular-animate/angular-animate.js',
+					'<%= bower %>/angular-loading-bar/build/loading-bar.js',
+					'<%= bower %>/angular-sweetalert/SweetAlert.js',
+					'<%= bower %>/sweetalert/lib/sweet-alert.js',
 					
-					'app/app.js',
-					'app/athlete/*.js',
-					'app/home/*.js',
-					'app/navigation/*.js',
-					'app/shared/*.js',
-					'app/week/*.js',
+					'<%= app %>/app.js',
+					'<%= app %>/athlete/*.js',
+					'<%= app %>/home/*.js',
+					'<%= app %>/navigation/*.js',
+					'<%= app %>/shared/*.js',
+					'<%= app %>/week/*.js',
 
-					'!app/**/*_test.js'
+					'!<%= app %>/**/*_test.js'
 
 				],
-				dest: 'dist/built.js',
+				dest: '<%= js_build_path %>/built.js',
 			},
+			css: {
+				src: [
+					'<%= bower %>/bootstrap/dist/css/bootstrap.css',
+					'<%= bower %>/bootstrap/dist/css/bootstrap-theme.css',
+					'<%= bower %>/angular-loading-bar/build/loading-bar.css',
+					'<%= bower %>/sweetalert/lib/sweet-alert.css'
+				],
+				dest: '<%= css_build_path %>/built.css'
+			}
 		},
 
 		uglify: {
@@ -47,10 +63,17 @@ module.exports = function(grunt) {
 				banner: '/*! Fitness Evaluation <%= grunt.template.today("yyyy-mm-dd") %> */\n',
 				mangle: false
 			},
-			dist: {
+			js: {
 				files: {
-					'dist/built.min.js': ['<%= concat.dist.dest %>']
+					'<%= js_build_path %>/built.min.js': ['<%= concat.js.dest %>']
 				}
+			}
+		},
+
+		cssmin: {
+			css: {
+				src: '<%= concat.css.dest %>',
+				dest: '<%= css_build_path %>/built.min.css'
 			}
 		},
 
@@ -68,6 +91,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-newer');
 
 	// grunt.event.on('watch', function(action, filepath, target) {
@@ -75,6 +99,7 @@ module.exports = function(grunt) {
 	// });
 
 	// Default task(s).
-	grunt.registerTask('default', ['concat', 'uglify']);
+	grunt.registerTask('default', ['concat', 'uglify', 'cssmin']);
+	grunt.registerTask('dev', ['concat']);
 
 };
