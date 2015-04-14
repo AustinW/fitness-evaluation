@@ -64,6 +64,23 @@ module.exports = function(grunt) {
 			}
 		},
 
+		ngtemplates: {
+			fitnessApp: {
+				src: '<%= app %>/templates/**/*.html',
+				dest: '<%= concat.js.dest %>',
+				options: {
+					append: true,
+					prefix: 'static',
+					htmlmin: {
+						collapseWhitespace: true,
+						collapseBooleanAttributes: true,
+						remoteComments: true,
+						removeRedundantAttributes: true
+					}
+				}
+			}
+		},
+
 		uglify: {
 			options: {
 				banner: '/*! Fitness Evaluation <%= grunt.template.today("yyyy-mm-dd") %> */\n',
@@ -127,15 +144,29 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-angular-templates');
 	grunt.loadNpmTasks('grunt-cache-bust');
 	grunt.loadNpmTasks('grunt-notify');
 
-	// grunt.event.on('watch', function(action, filepath, target) {
-	// 	grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
-	// });
+	// Default task
+	grunt.registerTask('default', [
+		'clean:build', 
+		'concat', 
+		'ngtemplates', 
+		'uglify', 
+		'cssmin', 
+		'cacheBust', 
+		'notify_hooks'
+	]);
 
-	// Default task(s).
-	grunt.registerTask('default', ['clean', 'concat', 'uglify', 'cssmin', 'cacheBust', 'notify_hooks']);
-	grunt.registerTask('dev', ['clean', 'concat', 'cssmin', 'cacheBust', 'notify_hooks']);
+	// Only the fastest tasks (used in `watch`)
+	grunt.registerTask('dev', [
+		'clean:build', 
+		'concat', 
+		'ngtemplates', 
+		'cssmin', 
+		'cacheBust', 
+		'notify_hooks'
+	]);
 
 };

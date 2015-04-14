@@ -42527,4 +42527,26 @@ angular.module('fitnessApp.week', ['ngRoute'])
 	};
 
 	$scope.renderHtml = html.render;
+}]);angular.module('fitnessApp').run(['$templateCache', function($templateCache) {
+  'use strict';
+
+  $templateCache.put('static/app/templates/404.html',
+    "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-12\"><div class=\"jumbotron\"><h1>404 Not Found</h1><p>The page you're looking for could not be found. Try returning <a href=\"#/\">Home</a>?</p></div></div></div></div>"
+  );
+
+
+  $templateCache.put('static/app/templates/athlete.html',
+    "<div class=\"container-fluid\"><div class=\"row error-display\"><div class=\"col-md-12\"><div class=\"alert alert-danger alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button> <strong><i class=\"fa fa-exclamation-circle\"></i> Error:</strong> <span class=\"error-message\"></span></div></div></div><div class=\"row\"><div class=\"col-md-3 col-sm-3\"><a href=\"#/\" class=\"btn btn-sm btn-default\">&laquo; Weeks</a><h1>{{ athlete.name }}</h1><!-- TODO: Reselecting \"Overall\" does not work --><category-selector ng-model=\"category\"></category-selector><hr><table class=\"table table-hover table-striped\" id=\"rankings-table-foo\"><thead><tr><th>Week</th><th>Score</th></tr></thead><tbody><tr ng-repeat=\"result in results\"><td>{{ result.week }}</td><td ng-if=\"category == 'Overall'\">{{ result.result | ordinal }}</td><td ng-if=\"category != 'Overall'\">{{ result.result }}</td></tr></tbody></table><i id=\"rankings-table-spinner-foo\" style=\"display:none\" class=\"fa fa-spinner fa-5x fa-spin\"></i></div><div class=\"col-md-9 col-sm-9\"><div class=\"well\" id=\"graph\" ng-bind-html=\"renderHtml(graph)\"></div></div></div></div>"
+  );
+
+
+  $templateCache.put('static/app/templates/home.html',
+    "<div class=\"container\"><div class=\"row\"><div class=\"col-md-2 col-sm-12\"><h4>Select a worksheet</h4><hr><ul class=\"nav nav-pills nav-stacked\"><li ng-repeat=\"week in weeks\"><a href=\"#/week/{{ week.id }}\">{{ week.title }}</a></li></ul><hr></div><div class=\"col-md-9 col-sm-12\"><div class=\"jumbotron\"><h1>Welcome!</h1><p>To World Elite's Fitness Evaluation</p></div></div></div></div>"
+  );
+
+
+  $templateCache.put('static/app/templates/week.html',
+    "<div class=\"container-fluid\"><div class=\"row error-display\"><div class=\"col-md-12\"><div class=\"alert alert-danger alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button> <strong><i class=\"fa fa-exclamation-circle\"></i> Error:</strong> <span class=\"error-message\"></span></div></div></div><div class=\"row\"><div class=\"col-md-3 col-sm-3\"><a href=\"#/\" class=\"btn btn-sm btn-default\">&laquo; Weeks</a><h1>{{ week.title }}</h1><category-selector week=\"week.id\" ng-model=\"category\" ng-change=\"changeCategory()\"></category-selector><h3>Top Athletes</h3><hr><table class=\"table table-hover table-striped\"><thead><tr><th>#</th><th>Name</th><th>Score</th></tr></thead><tbody><tr ng-repeat=\"result in results\"><td>{{ ($index + 1) | ordinal }}</td><td>{{ result.athlete.name }}</td><td>{{ result.score }}</td></tr></tbody></table><i id=\"rankings-table-spinner\" style=\"display:none\" class=\"fa fa-spinner fa-5x fa-spin\"></i></div><div class=\"col-md-9 col-sm-9\"><div class=\"well\" id=\"graph\" ng-bind-html=\"renderHtml(graph)\"></div></div></div><div class=\"row\"><div class=\"col-md-12\"><blockquote><p>Note: Overall score is calculated as (total number of athletes - placement in category 1) + (total number of athletes - placement in category 2) + ...</p></blockquote></div></div></div>"
+  );
+
 }]);
