@@ -50,9 +50,9 @@ class Week:
 
 	def stats_for_category(self, category, sorter):
 
-		athletes = [athlete for athlete in self.athletes().values() if athlete.categories[self.id()][category] != '']
+		athletes = [athlete for athlete in self.athletes().values() if athlete.categories.get(self.id()).get(category) != '']
 
-		stats = map(lambda athlete: athlete.categories[self.id()][category], athletes)
+		stats = map(lambda athlete: athlete.categories.get(self.id()).get(category), athletes)
 
 		if len(athletes) == len(stats):
 			result_tuples = zip(athletes, stats)

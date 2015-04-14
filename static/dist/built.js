@@ -42524,6 +42524,9 @@ angular.module('fitnessApp.week', ['ngRoute'])
 	$scope.week = weeksPromise.data;
 
 	$scope.$watch('category', function() {
+		if ($scope.category == null) {
+			$scope.category = 'Overall Ranking';
+		}
 		$scope.changeCategory();
 	});
 
@@ -42532,12 +42535,12 @@ angular.module('fitnessApp.week', ['ngRoute'])
 
 		if ($scope.week) {
 
-			$http.get('/api/week/' + $scope.week.id + '?category=' + $scope.category).then(function(data) {
-				$scope.results = data.data;
+			$http.get('/api/week/' + $scope.week.id + '?category=' + $scope.category).then(function(response) {
+				$scope.results = response.data;
 			});
 
-			$http.get('/api/week/' + $scope.week.id + '/graph?category=' + $scope.category).then(function(data) {
-				$scope.graph = data.data;
+			$http.get('/api/week/' + $scope.week.id + '/graph?category=' + $scope.category).then(function(response) {
+				$scope.graph = response.data;
 			});
 		}
 	};

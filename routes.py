@@ -24,6 +24,9 @@ from oauth2client.client import flow_from_clientsecrets
 
 storage = Storage(app.config['GOOGLE_OAUTH_AUTHORIZED_CREDENTIALS'])
 
+def make_cache_key(route):
+	return route + ':' + request.url
+
 @app.route('/')
 @app.cache.cached(app.config['CACHE_TIME'])
 def index():
@@ -33,15 +36,9 @@ def index():
 	except Exception as e:
 		return render_template('error.html', message=e.message)
 
-@app.route('/api/clear-cache')
-def clear_cache():
-	app.cache.clear()
-
-	return Response(json.dumps({"message": "Cache cleared successfully"}), mimetype='application/json')
-
 @app.route('/api/weeks', defaults={'week_id': None})
 @app.route('/api/weeks/<week_id>')
-@app.cache.memoize(app.config['CACHE_TIME'])
+@app.cache.memoize(timeout=app.config['CACHE_TIME'], make_name=make_cache_key)
 def list_weeks(week_id):
 	try:
 		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'], app.config['ATHLETE_DB_PATH'])
@@ -66,7 +63,7 @@ def list_weeks(week_id):
 
 @app.route('/api/athletes', defaults = {'usag_id': None})
 @app.route('/api/athletes/<usag_id>')
-@app.cache.memoize(app.config['CACHE_TIME'])
+@app.cache.memoize(timeout=app.config['CACHE_TIME'], make_name=make_cache_key)
 def athlete_info(usag_id):
 	try:
 		# Get main Google Sheet
@@ -90,9 +87,10 @@ def athlete_info(usag_id):
 		response.status_code = 400
 		return response
 
+import traceback, sys
 @app.route('/api/week/<worksheet_id>', defaults = {'show': 'json'})
 @app.route('/api/week/<worksheet_id>/graph', defaults = {'show': 'graph'})
-@app.cache.memoize(app.config['CACHE_TIME'])
+@app.cache.memoize(timeout=app.config['CACHE_TIME'], make_name=make_cache_key)
 def week_stats(worksheet_id, show):
 	try:
 		mainSheet = Fitness(app.config['GOOGLE_SHEETS_ID'], app.config['ATHLETE_DB_PATH'])
@@ -104,7 +102,11 @@ def week_stats(worksheet_id, show):
 		if not week:
 			return Response(jsonify({'message': 'Could not find the specified worksheet'}), 404)
 
-		if 'category' in request.args and request.args['category'] != 'Overall Ranking':
+		category = request.args.get('category', None)
+		if category == 'null' or category == 'Overall Ranking':
+			category = None
+
+		if category:
 			category = request.args['category']
 			mapper = CategoryMapper()
 			sorter = mapper.sorter(category)
@@ -125,13 +127,15 @@ def week_stats(worksheet_id, show):
 			return graph.get_line_graph(request.args.get('category', 'Overall Ranking'), 'Overall Points', stats)
 
 	except Exception as e:
+		traceback.print_exc()
+		print type(e)
 		response = jsonify(message=e.message)
 		response.status_code = 400
 		return response
 
 @app.route('/api/athletes/<usag_id>/stats', defaults={'show': 'json'})
 @app.route('/api/athletes/<usag_id>/graph', defaults={'show': 'graph'})
-@app.cache.memoize(app.config['CACHE_TIME'])
+@app.cache.memoize(timeout=app.config['CACHE_TIME'], make_name=make_cache_key)
 def athlete_stats(usag_id, show):
 	try:
 		# Get main Google Sheet
@@ -142,7 +146,11 @@ def athlete_stats(usag_id, show):
 		athlete = mainSheet.athlete(usag_id)
 
 		# Check if we're looking for a specific category or overall stats
-		if 'category' in request.args and request.args['category'] != 'Overall':
+		category = request.args.get('category', None)
+		if category == 'null' or category == 'Overall':
+			category = None
+
+		if category:
 
 			# Init list to contain dicts of format {"week": ..., "result": ...}
 			weekly_category_stats = []
@@ -187,7 +195,7 @@ def athlete_stats(usag_id, show):
 		return response
 
 @app.route('/api/categories')
-@app.cache.memoize(app.config['CACHE_TIME'])
+@app.cache.memoize(timeout=app.config['CACHE_TIME'], make_name=make_cache_key)
 def categories():
 	try:
 		# Get main Google Sheet
@@ -208,7 +216,13 @@ def categories():
 	except Exception as e:
 		response = jsonify(message=e.message)
 		response.status_code = 400
-		return response 
+		return response
+
+@app.route('/api/clear-cache')
+def clear_cache():
+	app.cache.clear()
+
+	return Response(json.dumps({"message": "Cache cleared successfully"}), mimetype='application/json')
 
 @app.errorhandler(500)
 def internal_error(exception):
