@@ -28,7 +28,7 @@ def make_cache_key(route):
 	return route + ':' + request.url
 
 @app.route('/')
-@app.cache.cached(app.config['CACHE_TIME'])
+@app.cache.cached(app.config['CACHE_TIME'], unless=lambda: app.config['DEBUG'])
 def index():
 	try:
 		return render_template('layout.html')

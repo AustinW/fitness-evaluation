@@ -7,6 +7,7 @@ module.exports = function(grunt) {
 		app: 'app',
 		dist: 'dist',
 
+		python_templates: '../templates',
 		js_build_path: '<%= dist %>/js',
 		css_build_path: '<%= dist %>/css',
 		bower: '<%= app %>/bower_components',
@@ -19,7 +20,7 @@ module.exports = function(grunt) {
 				banner: "'use strict';\n",
 				
 				process: function(src, filepath) {
-					return '\n// Source: ' + filepath + '\n' +
+					return '\n/* Source: ' + filepath + ' */\n' +
 					src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
 				}
 			},
@@ -48,11 +49,16 @@ module.exports = function(grunt) {
 				dest: '<%= js_build_path %>/built.js',
 			},
 			css: {
+				options: {
+					stripBanners: true,
+					banner: ""
+				},
 				src: [
 					'<%= bower %>/bootstrap/dist/css/bootstrap.css',
 					'<%= bower %>/bootstrap/dist/css/bootstrap-theme.css',
 					'<%= bower %>/angular-loading-bar/build/loading-bar.css',
-					'<%= bower %>/sweetalert/lib/sweet-alert.css'
+					'<%= bower %>/sweetalert/lib/sweet-alert.css',
+					'css/main.css'
 				],
 				dest: '<%= css_build_path %>/built.css'
 			}
@@ -77,29 +83,59 @@ module.exports = function(grunt) {
 			}
 		},
 
+		cacheBust: {
+			options: {
+				encoding: 'utf8',
+				algorithm: 'md5',
+				length: '10',
+				deleteOriginals: false,
+				baseDir: '../',
+				rename: false
+			},
+			assets: {
+				files: [{
+					src: ['<%= python_templates %>/layout.html']
+				}]
+			}
+		},
+
+		clean: {
+			build: ['<%= js_build_path %>', '<%= css_build_path %>']
+		},
+
 		watch: {
 			scripts: {
-				files: ['Gruntfile.js', 'app/**/*.js', 'templates/**/*.html'],
-				tasks: ['concat'],
+				files: ['Gruntfile.js', 'app/**/*.js', 'css/**/*.css', 'templates/**/*.html'],
+				tasks: ['dev'],
 				options: {
 					livereload: true
 				}
 			},
 		},
+
+		notify_hooks: {
+			options: {
+				enabled: true,
+				title: 'Assets compiled',
+				success: true
+			}
+		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
-	grunt.loadNpmTasks('grunt-newer');
+	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-cache-bust');
+	grunt.loadNpmTasks('grunt-notify');
 
 	// grunt.event.on('watch', function(action, filepath, target) {
 	// 	grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
 	// });
 
 	// Default task(s).
-	grunt.registerTask('default', ['concat', 'uglify', 'cssmin']);
-	grunt.registerTask('dev', ['concat']);
+	grunt.registerTask('default', ['clean', 'concat', 'uglify', 'cssmin', 'cacheBust', 'notify_hooks']);
+	grunt.registerTask('dev', ['clean', 'concat', 'cssmin', 'cacheBust', 'notify_hooks']);
 
 };

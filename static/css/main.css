@@ -1,0 +1,7 @@
+.error-display {
+	display:none;
+}
+.social-links {
+	font-size:26px;
+}
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }

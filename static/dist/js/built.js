@@ -1,6 +1,4 @@
 'use strict';
-
-// Source: app/bower_components/jquery/dist/jquery.js
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -9207,8 +9205,6 @@ return jQuery;
 
 }));
 
-
-// Source: app/bower_components/bootstrap/dist/js/bootstrap.js
 /*!
  * Bootstrap v3.3.4 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
@@ -11502,8 +11498,6 @@ var version = $.fn.jquery.split(' ')[0].split('.')
 
 }(jQuery);
 
-
-// Source: app/bower_components/angular/angular.js
 /**
  * @license AngularJS v1.3.15
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -37813,8 +37807,6 @@ var minlengthDirective = function() {
 })(window, document);
 
 !window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
-
-// Source: app/bower_components/angular-route/angular-route.js
 /**
  * @license AngularJS v1.3.15
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -38805,8 +38797,6 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-
-// Source: app/bower_components/angularjs-ordinal-filter/ordinal.js
 // Ordinal Number Filter
 // ---------------------
 // This filter takes a number and returns its ordinal value
@@ -38827,8 +38817,6 @@ angular.module('ordinal', []).filter('ordinal', function() {
   return ordinal;
 });
 
-
-// Source: app/bower_components/angular-animate/angular-animate.js
 /**
  * @license AngularJS v1.3.15
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -40967,8 +40955,6 @@ angular.module('ngAnimate', ['ng'])
 
 })(window, window.angular);
 
-
-// Source: app/bower_components/angular-loading-bar/build/loading-bar.js
 /*! 
  * angular-loading-bar v0.7.1
  * https://chieffancypants.github.io/angular-loading-bar
@@ -41292,8 +41278,6 @@ angular.module('cfp.loadingBar', [])
   });       // wtf javascript. srsly
 })();       //
 
-
-// Source: app/bower_components/angular-sweetalert/SweetAlert.js
 /**
 @fileOverview
 
@@ -41347,8 +41331,6 @@ angular.module('oitozero.ngSweetAlert', [])
 	return self;
 }]);
 
-
-// Source: app/bower_components/sweetalert/lib/sweet-alert.js
 // SweetAlert
 // 2014-2015 (c) - Tristan Edwards
 // github.com/t4t5/sweetalert
@@ -42267,8 +42249,6 @@ angular.module('oitozero.ngSweetAlert', [])
 
 })(window, document);
 
-
-// Source: app/app.js
 var app = angular.module('fitnessApp', [
 	'ngRoute',
 	'ordinal',
@@ -42294,8 +42274,6 @@ var app = angular.module('fitnessApp', [
 .config(['$routeProvider', function($routeProvider) {
 	$routeProvider.otherwise({ templateUrl: 'static/app/templates/404.html' });
 }]);
-
-// Source: app/athlete/athlete-service.js
 angular.module('fitnessApp.athleteService', [])
 
 .factory('srvAthlete', ['$http', function($http) {
@@ -42325,8 +42303,6 @@ angular.module('fitnessApp.athleteService', [])
 
 	return AthleteService;
 }]);
-
-// Source: app/athlete/athlete.js
 angular.module('fitnessApp.athlete', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
@@ -42367,8 +42343,6 @@ angular.module('fitnessApp.athlete', ['ngRoute'])
 	$scope.renderHtml = html.render;
 
 }]);
-
-// Source: app/home/home.js
 angular.module('fitnessApp.home', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
@@ -42385,11 +42359,9 @@ angular.module('fitnessApp.home', ['ngRoute'])
 		$scope.weeks = weeksFactory.weeks;
 	});
 }]);
-
-// Source: app/navigation/navigation.js
 angular.module('fitnessApp.navigation', [])
 
-.controller('NavigationBarController', ['$scope', '$http', 'srvWeeks', 'srvAthlete', 'SweetAlert', function($scope, $http, srvWeeks, srvAthlete, SweetAlert) {
+.controller('NavigationBarController', ['$scope', '$http', '$route', '$timeout', 'srvWeeks', 'srvAthlete', 'SweetAlert', function($scope, $http, $route, $timeout, srvWeeks, srvAthlete, SweetAlert) {
 	var athleteFactory = new srvAthlete();
 
 	athleteFactory.all().then(function() {
@@ -42403,20 +42375,37 @@ angular.module('fitnessApp.navigation', [])
 	});
 
 	$scope.clearCache = function() {
-		$http.get('/api/clear-cache').then(function(response) {
-			var message = response.data.message;
 
-			SweetAlert.swal({
-				title: 'Cleared',
-				text: message,
-				timer: 2000,
-				type: 'success'
-			});
+		SweetAlert.swal({
+			title: 'Are you sure?',
+			text: 'This will cause the site to temporarily run a bit slower to ensure it has the latest results. Don\'t worry, it is safe to do.',
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#DD6B55',
+			confirmButtonText: 'Yes, clear it',
+			closeOnConfirm: false
+		}, function(confirmed) {
+
+			if (confirmed) {
+				$http.get('/api/clear-cache').then(function(response) {
+					var message = response.data.message;
+
+					SweetAlert.swal({
+						title: 'Cleared',
+						text: message,
+						timer: 2000,
+						type: 'success'
+					});
+
+					$timeout(function() {
+						// Reload the route when the cache has been cleared
+						$route.reload();
+					}, 2000);
+				});
+			}
 		});
 	}
 }]);
-
-// Source: app/shared/categories-service.js
 angular.module('fitnessApp.categoriesService', [])
 
 .factory('srvCategories', ['$http', function($http) {
@@ -42434,8 +42423,6 @@ angular.module('fitnessApp.categoriesService', [])
 	}
 
 }]);
-
-// Source: app/shared/category-selector-directive.js
 angular.module('fitnessApp.categorySelectorDirective', [])
 
 .directive('categorySelector', function() {
@@ -42461,8 +42448,6 @@ angular.module('fitnessApp.categorySelectorDirective', [])
 		link: function(scope, element, attrs) {}
 	}
 });
-
-// Source: app/shared/html-service.js
 angular.module('fitnessApp.htmlService', [])
 
 .service('html', ['$sce', function($sce) {
@@ -42470,8 +42455,6 @@ angular.module('fitnessApp.htmlService', [])
 		return $sce.trustAsHtml(html);
 	};
 }]);
-
-// Source: app/week/week-service.js
 angular.module('fitnessApp.weekService', [])
 
 .factory('srvWeeks', ['$http', function($http) {
@@ -42500,8 +42483,6 @@ angular.module('fitnessApp.weekService', [])
 
 	return WeekService;
 }]);
-
-// Source: app/week/week.js
 angular.module('fitnessApp.week', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
