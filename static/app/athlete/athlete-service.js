@@ -12,7 +12,7 @@ angular.module('fitnessApp.athleteService', [])
 	AthleteService.prototype.all = function() {
 		var self = this;
 
-		return $http.get('/api/athletes').then(function(response) {
+		return $http.get('/api/athletes', {cache: true}).then(function(response) {
 			self.athletes = response.data;
 			return response;
 		});
@@ -21,7 +21,7 @@ angular.module('fitnessApp.athleteService', [])
 	AthleteService.prototype.find = function(usag_id) {
 		var self = this;
 
-		return $http.get('/api/athletes/' + usag_id).then(function(response) {
+		return $http.get('/api/athletes/' + usag_id, {cache: true}).then(function(response) {
 			self.athlete = response.data;
 			return response;
 		});

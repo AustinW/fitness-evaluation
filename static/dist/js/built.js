@@ -42286,7 +42286,7 @@ angular.module('fitnessApp.athleteService', [])
 	AthleteService.prototype.all = function() {
 		var self = this;
 
-		return $http.get('/api/athletes').then(function(response) {
+		return $http.get('/api/athletes', {cache: true}).then(function(response) {
 			self.athletes = response.data;
 			return response;
 		});
@@ -42295,7 +42295,7 @@ angular.module('fitnessApp.athleteService', [])
 	AthleteService.prototype.find = function(usag_id) {
 		var self = this;
 
-		return $http.get('/api/athletes/' + usag_id).then(function(response) {
+		return $http.get('/api/athletes/' + usag_id, {cache: true}).then(function(response) {
 			self.athlete = response.data;
 			return response;
 		});
@@ -42418,7 +42418,7 @@ angular.module('fitnessApp.categoriesService', [])
 				url += '?week=' + week;
 			}
 
-			return $http.get(url);
+			return $http.get(url, {cache: true});
 		}
 	}
 
@@ -42466,7 +42466,7 @@ angular.module('fitnessApp.weekService', [])
 	WeekService.prototype.all = function() {
 		var self = this;
 
-		return $http.get('/api/weeks').then(function(response) {
+		return $http.get('/api/weeks', {cache: true}).then(function(response) {
 			self.weeks = response.data;
 			return response;
 		});
@@ -42475,7 +42475,7 @@ angular.module('fitnessApp.weekService', [])
 	WeekService.prototype.find = function(week_id) {
 		var self = this;
 
-		return $http.get('/api/weeks/' + week_id).then(function(response) {
+		return $http.get('/api/weeks/' + week_id, {cache: true}).then(function(response) {
 			self.week = response.data;
 			return response;
 		})

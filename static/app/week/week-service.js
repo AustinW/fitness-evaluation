@@ -11,7 +11,7 @@ angular.module('fitnessApp.weekService', [])
 	WeekService.prototype.all = function() {
 		var self = this;
 
-		return $http.get('/api/weeks').then(function(response) {
+		return $http.get('/api/weeks', {cache: true}).then(function(response) {
 			self.weeks = response.data;
 			return response;
 		});
@@ -20,7 +20,7 @@ angular.module('fitnessApp.weekService', [])
 	WeekService.prototype.find = function(week_id) {
 		var self = this;
 
-		return $http.get('/api/weeks/' + week_id).then(function(response) {
+		return $http.get('/api/weeks/' + week_id, {cache: true}).then(function(response) {
 			self.week = response.data;
 			return response;
 		})
