@@ -15,10 +15,10 @@ module.exports = function(grunt) {
 		concat: {
 			options: {
 				stripBanners: true,
-				
+
 				// Replace all 'use strict' statements in the code with a single one at the top
 				banner: "'use strict';\n",
-				
+
 				process: function(src, filepath) {
 					return '\n/* Source: ' + filepath + ' */\n' +
 					src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
 					'<%= bower %>/angular-loading-bar/build/loading-bar.js',
 					'<%= bower %>/angular-sweetalert/SweetAlert.js',
 					'<%= bower %>/sweetalert/lib/sweet-alert.js',
-					
+
 					'<%= app %>/app.js',
 					'<%= app %>/athlete/*.js',
 					'<%= app %>/home/*.js',
@@ -84,7 +84,8 @@ module.exports = function(grunt) {
 		uglify: {
 			options: {
 				banner: '/*! Fitness Evaluation <%= grunt.template.today("yyyy-mm-dd") %> */\n',
-				mangle: false
+				mangle: false,
+				sourceMap: true
 			},
 			js: {
 				files: {
@@ -150,22 +151,22 @@ module.exports = function(grunt) {
 
 	// Default task
 	grunt.registerTask('default', [
-		'clean:build', 
-		'concat', 
-		'ngtemplates', 
-		'uglify', 
-		'cssmin', 
-		'cacheBust', 
+		'clean:build',
+		'concat',
+		'ngtemplates',
+		'uglify',
+		'cssmin',
+		'cacheBust',
 		'notify_hooks'
 	]);
 
 	// Only the fastest tasks (used in `watch`)
 	grunt.registerTask('dev', [
-		'clean:build', 
-		'concat', 
-		'ngtemplates', 
-		'cssmin', 
-		'cacheBust', 
+		'clean:build',
+		'concat',
+		'ngtemplates',
+		'cssmin',
+		'cacheBust',
 		'notify_hooks'
 	]);
 

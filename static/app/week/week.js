@@ -37,8 +37,12 @@ angular.module('fitnessApp.week', ['ngRoute'])
 				$scope.results = response.data;
 			});
 
-			$http.get('/api/week/' + $scope.week.id + '/graph?category=' + $scope.category).then(function(response) {
+			$scope.graphUrl = '/api/week/' + $scope.week.id + '/graph?category=' + $scope.category;
+			$http.get($scope.graphUrl).then(function(response) {
 				$scope.graph = response.data;
+			}, function(error) {
+				// Failure
+				$scope.graph = '<div class="alert alert-danger"><strong><i class="fa fa-exclamation-circle"></i> Error</strong> There was a problem retrieving this graph</div>';
 			});
 		}
 	};

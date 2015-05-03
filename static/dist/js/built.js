@@ -42335,14 +42335,19 @@ angular.module('fitnessApp.athlete', ['ngRoute'])
 			$scope.results = data.data;
 		});
 
-		$http.get('/api/athletes/' + $scope.athlete.usag_id + '/graph?category=' + $scope.category).then(function(data) {
+		$scope.graphUrl = '/api/athletes/' + $scope.athlete.usag_id + '/graph?category=' + $scope.category;
+		$http.get($scope.graphUrl).then(function(data) {
 			$scope.graph = data.data;
+		}, function(error) {
+			// Failure
+			$scope.graph = '<div class="alert alert-danger"><strong><i class="fa fa-exclamation-circle"></i> Error</strong> There was a problem retrieving this graph</div>';
 		});
 	};
 
 	$scope.renderHtml = html.render;
 
 }]);
+
 angular.module('fitnessApp.home', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
@@ -42520,14 +42525,19 @@ angular.module('fitnessApp.week', ['ngRoute'])
 				$scope.results = response.data;
 			});
 
-			$http.get('/api/week/' + $scope.week.id + '/graph?category=' + $scope.category).then(function(response) {
+			$scope.graphUrl = '/api/week/' + $scope.week.id + '/graph?category=' + $scope.category;
+			$http.get($scope.graphUrl).then(function(response) {
 				$scope.graph = response.data;
+			}, function(error) {
+				// Failure
+				$scope.graph = '<div class="alert alert-danger"><strong><i class="fa fa-exclamation-circle"></i> Error</strong> There was a problem retrieving this graph</div>';
 			});
 		}
 	};
 
 	$scope.renderHtml = html.render;
-}]);angular.module('fitnessApp').run(['$templateCache', function($templateCache) {
+}]);
+angular.module('fitnessApp').run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('static/app/templates/404.html',
@@ -42536,7 +42546,7 @@ angular.module('fitnessApp.week', ['ngRoute'])
 
 
   $templateCache.put('static/app/templates/athlete.html',
-    "<div class=\"container-fluid\"><div class=\"row error-display\"><div class=\"col-md-12\"><div class=\"alert alert-danger alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button> <strong><i class=\"fa fa-exclamation-circle\"></i> Error:</strong> <span class=\"error-message\"></span></div></div></div><div class=\"row\"><div class=\"col-md-3 col-sm-3\"><a href=\"#/\" class=\"btn btn-sm btn-default\">&laquo; Weeks</a><h1>{{ athlete.name }}</h1><!-- TODO: Reselecting \"Overall\" does not work --><category-selector ng-model=\"category\"></category-selector><hr><table class=\"table table-hover table-striped\" id=\"rankings-table-foo\"><thead><tr><th>Week</th><th>Score</th></tr></thead><tbody><tr ng-repeat=\"result in results\"><td>{{ result.week }}</td><td ng-if=\"category == 'Overall'\">{{ result.result | ordinal }}</td><td ng-if=\"category != 'Overall'\">{{ result.result }}</td></tr></tbody></table><i id=\"rankings-table-spinner-foo\" style=\"display:none\" class=\"fa fa-spinner fa-5x fa-spin\"></i></div><div class=\"col-md-9 col-sm-9\"><div class=\"well\" id=\"graph\" ng-bind-html=\"renderHtml(graph)\"></div></div></div></div>"
+    "<div class=\"container-fluid\"><div class=\"row error-display\"><div class=\"col-md-12\"><div class=\"alert alert-danger alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button> <strong><i class=\"fa fa-exclamation-circle\"></i> Error:</strong> <span class=\"error-message\"></span></div></div></div><div class=\"row\"><div class=\"col-md-3 col-sm-3\"><a href=\"#/\" class=\"btn btn-sm btn-default\">&laquo; Weeks</a><h1>{{ athlete.name }}</h1><!-- TODO: Reselecting \"Overall\" does not work --><category-selector ng-model=\"category\"></category-selector><hr><table class=\"table table-hover table-striped\" id=\"rankings-table-foo\"><thead><tr><th>Week</th><th>Score</th></tr></thead><tbody><tr ng-repeat=\"result in results\"><td>{{ result.week }}</td><td ng-if=\"category == 'Overall'\">{{ result.result | ordinal }}</td><td ng-if=\"category != 'Overall'\">{{ result.result }}</td></tr></tbody></table><i id=\"rankings-table-spinner-foo\" style=\"display:none\" class=\"fa fa-spinner fa-5x fa-spin\"></i></div><div class=\"col-md-9 col-sm-9\"><div class=\"well\" id=\"graph\"><a ng-href=\"{{ graphUrl }}\" target=\"_blank\"><span ng-bind-html=\"renderHtml(graph)\"></span></a></div></div></div></div>"
   );
 
 
@@ -42546,7 +42556,7 @@ angular.module('fitnessApp.week', ['ngRoute'])
 
 
   $templateCache.put('static/app/templates/week.html',
-    "<div class=\"container-fluid\"><div class=\"row error-display\"><div class=\"col-md-12\"><div class=\"alert alert-danger alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button> <strong><i class=\"fa fa-exclamation-circle\"></i> Error:</strong> <span class=\"error-message\"></span></div></div></div><div class=\"row\"><div class=\"col-md-3 col-sm-3\"><a href=\"#/\" class=\"btn btn-sm btn-default\">&laquo; Weeks</a><h1>{{ week.title }}</h1><category-selector week=\"week.id\" ng-model=\"category\" ng-change=\"changeCategory()\"></category-selector><h3>Top Athletes</h3><hr><table class=\"table table-hover table-striped\"><thead><tr><th>#</th><th>Name</th><th>Score</th></tr></thead><tbody><tr ng-repeat=\"result in results\"><td>{{ ($index + 1) | ordinal }}</td><td>{{ result.athlete.name }}</td><td>{{ result.score }}</td></tr></tbody></table><i id=\"rankings-table-spinner\" style=\"display:none\" class=\"fa fa-spinner fa-5x fa-spin\"></i></div><div class=\"col-md-9 col-sm-9\"><div class=\"well\" id=\"graph\" ng-bind-html=\"renderHtml(graph)\"></div></div></div><div class=\"row\"><div class=\"col-md-12\"><blockquote><p>Note: Overall score is calculated as (total number of athletes - placement in category 1) + (total number of athletes - placement in category 2) + ...</p></blockquote></div></div></div>"
+    "<div class=\"container-fluid\"><div class=\"row error-display\"><div class=\"col-md-12\"><div class=\"alert alert-danger alert-dismissible\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button> <strong><i class=\"fa fa-exclamation-circle\"></i> Error:</strong> <span class=\"error-message\"></span></div></div></div><div class=\"row\"><div class=\"col-md-3 col-sm-3\"><a href=\"#/\" class=\"btn btn-sm btn-default\">&laquo; Weeks</a><h1>{{ week.title }}</h1><category-selector week=\"week.id\" ng-model=\"category\" ng-change=\"changeCategory()\"></category-selector><h3>Top Athletes</h3><hr><table class=\"table table-hover table-striped\"><thead><tr><th>#</th><th>Name</th><th>Score</th></tr></thead><tbody><tr ng-repeat=\"result in results\"><td>{{ ($index + 1) | ordinal }}</td><td>{{ result.athlete.name }}</td><td>{{ result.score }}</td></tr></tbody></table><i id=\"rankings-table-spinner\" style=\"display:none\" class=\"fa fa-spinner fa-5x fa-spin\"></i></div><div class=\"col-md-9 col-sm-9\"><div class=\"well\" id=\"graph\"><a ng-href=\"{{ graphUrl }}\" target=\"_blank\"><span ng-bind-html=\"renderHtml(graph)\"></span></a></div></div></div><div class=\"row\"><div class=\"col-md-12\"><blockquote><p>Note: Overall score is calculated as (total number of athletes - placement in category 1) + (total number of athletes - placement in category 2) + ...</p></blockquote></div></div></div>"
   );
 
 }]);

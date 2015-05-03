@@ -32,8 +32,12 @@ angular.module('fitnessApp.athlete', ['ngRoute'])
 			$scope.results = data.data;
 		});
 
-		$http.get('/api/athletes/' + $scope.athlete.usag_id + '/graph?category=' + $scope.category).then(function(data) {
+		$scope.graphUrl = '/api/athletes/' + $scope.athlete.usag_id + '/graph?category=' + $scope.category;
+		$http.get($scope.graphUrl).then(function(data) {
 			$scope.graph = data.data;
+		}, function(error) {
+			// Failure
+			$scope.graph = '<div class="alert alert-danger"><strong><i class="fa fa-exclamation-circle"></i> Error</strong> There was a problem retrieving this graph</div>';
 		});
 	};
 
