@@ -41,9 +41,10 @@ class CategoryRanking:
 		if sorter.__name__ == 'yes_no_sort':
 
 			for stat in self.category_stats:
+				print stat
 
 				# Find the athlete and break
-				if stat[self.ATHLETE_OBJECT].name == athlete.name:
+				if stat[self.ATHLETE_OBJECT] == athlete.name:
 
 					return 1 if stat[self.SCORE] == 'Yes' else 0
 
@@ -84,6 +85,3 @@ class CategoryRanking:
 					return athlete_points
 
 				index += 1
-
-
-
