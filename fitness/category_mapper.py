@@ -32,6 +32,7 @@ class CategoryMapper:
 			'swing-time': CategoryMapper.maximum_sort,
 			'3-4-back-cody-tuck': CategoryMapper.maximum_sort,
 			'3-4-front-barani-ballout-tuck': CategoryMapper.maximum_sort,
+			'2-straight-bounces': CategoryMapper.maximum_sort,
 			'barani-tuck-back-tuck': CategoryMapper.maximum_sort,
 			'barani-straight-back-straight': CategoryMapper.maximum_sort,
 			'round-off-6x-backhandsprings': CategoryMapper.minimum_ignore_negative_sort,
