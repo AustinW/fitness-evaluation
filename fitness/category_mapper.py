@@ -9,6 +9,7 @@ class CategoryMapper:
 	def __init__(self):
 		self.category_maps = {
 			'rope-climb': CategoryMapper.minimum_ignore_negative_sort,
+			'rope-climb-steps': CategoryMapper.maximum_sort,
 			'rope-climb-no-legs-small-rope': CategoryMapper.minimum_ignore_negative_sort,
 			'suicide-run': CategoryMapper.minimum_ignore_negative_sort,
 			'sprint': CategoryMapper.minimum_sort,
