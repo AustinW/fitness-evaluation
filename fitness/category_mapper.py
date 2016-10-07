@@ -8,6 +8,10 @@ class CategoryMapper:
 
 	def __init__(self):
 		self.category_maps = {
+			'leg-lifts': CategoryMapper.maximum_sort,
+			'handstand': CategoryMapper.maximum_sort,
+			'box-jumps': CategoryMapper.maximum_sort,
+			'standing-back-tucks': CategoryMapper.maximum_sort,
 			'rope-climb': CategoryMapper.minimum_ignore_negative_sort,
 			'rope-climb-steps': CategoryMapper.maximum_sort,
 			'rope-climb-no-legs-small-rope': CategoryMapper.minimum_ignore_negative_sort,
