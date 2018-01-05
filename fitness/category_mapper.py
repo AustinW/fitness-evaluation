@@ -42,7 +42,8 @@ class CategoryMapper:
 			'barani-straight-back-straight': CategoryMapper.maximum_sort,
 			'round-off-6x-backhandsprings': CategoryMapper.minimum_ignore_negative_sort,
 			'round-off-6x-whips': CategoryMapper.minimum_ignore_negative_sort,
-			'vertical-jump': CategoryMapper.maximum_sort
+			'vertical-jump': CategoryMapper.maximum_sort,
+			'30s-straight-body-hold': CategoryMapper.maximum_sort
 		}
 	
 	@staticmethod
